@@ -37,24 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     I am a digital architect obsessed with the raw aesthetic of early computing. 
     I build web experiences that are not just viewed, but traversed.
         `,
-        'projects': `
-    <span class="uppercase">Listing Projects...</span>
-    
-    1. <span class="cmd-link" data-cmd="view project-one">PROJECT_ONE</span>  -  [ENCRYPTED]
-    2. <span class="cmd-link" data-cmd="view project-two">PROJECT_TWO</span>  -  [ENCRYPTED]
-    3. <span class="cmd-link" data-cmd="view project-three">PROJECT_THREE</span> -  [ENCRYPTED]
-    
-    <span class="error">ACCESS DENIED. Run 'admin' to authenticate.</span>
-        `,
-        'projects_admin': `
-    <span class="uppercase">Listing Projects [ADMIN ACCESS]...</span>
-    
-    1. <span class="cmd-link" data-cmd="view project-one">PROJECT_ONE</span>  -  [Secure comms uplink interface]
-    2. <span class="cmd-link" data-cmd="view project-two">PROJECT_TWO</span>  -  [Retro-futuristic data visualizer]
-    3. <span class="cmd-link" data-cmd="view project-three">PROJECT_THREE</span> -  [Autonomous drone control dashboard]
-    
-    Type 'view [project-name]' for details.
-        `,
         'contact': `
     <span class="uppercase">Comms Link:</span>
     
@@ -85,6 +67,70 @@ document.addEventListener('DOMContentLoaded', () => {
     Implemented with Vue.js and MQTT.
         `
     };
+
+    const projectsData = [
+        {
+            id: 'project-one',
+            title: 'PROJECT_ONE',
+            description: 'Secure comms uplink interface with real-time encryption.'
+        },
+        {
+            id: 'project-two',
+            title: 'PROJECT_TWO',
+            description: 'Retro-futuristic data visualizer using WebGL.'
+        },
+        {
+            id: 'project-three',
+            title: 'PROJECT_THREE',
+            description: 'Autonomous drone control dashboard.'
+        }
+    ];
+
+    function scrambleText(text) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        return text.split('').map(char => {
+            if (char === ' ') return ' ';
+            return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+    }
+
+    function renderProjects() {
+        const grid = document.getElementById('project-grid');
+        grid.innerHTML = '';
+
+        projectsData.forEach(proj => {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            const desc = isAdmin ? proj.description : scrambleText(proj.description);
+            const extraClass = isAdmin ? '' : 'encrypted';
+
+            card.innerHTML = `
+                <h3>${proj.title}</h3>
+                <p class="${extraClass}">${desc}</p>
+            `;
+
+            card.addEventListener('click', () => {
+                // Execute view command
+                // Close GUI first? Or keep it open? 
+                // UX: running a command usually happens in terminal. 
+                // Let's close GUI to show the "result" in terminal
+                document.getElementById('project-gui').classList.add('hidden');
+
+                // Simulate typing view command
+                const cmd = `view ${proj.id}`;
+                currentInput = cmd;
+                updateTyper();
+                setTimeout(() => {
+                    handleCommand(cmd);
+                    currentInput = '';
+                    updateTyper();
+                }, 200);
+            });
+
+            grid.appendChild(card);
+        });
+    }
 
     // Helper: Print line to output
     function printLine(text, className = '', typing = false) {
@@ -181,11 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'ls':
             case 'projects':
-                if (isAdmin) {
-                    await printLine(fileSystem['projects_admin']);
-                } else {
-                    await printLine(fileSystem['projects']);
-                }
+                await printLine("INITIALIZING PROJECT DATABASE GUI...", "", true);
+                setTimeout(() => {
+                    renderProjects();
+                    document.getElementById('project-gui').classList.remove('hidden');
+                }, 500);
                 break;
             case 'about':
             case 'whoami':
@@ -207,6 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     await new Promise(resolve => setTimeout(() => {
                         isAdmin = true;
                         document.body.classList.add('admin-mode');
+                        // Re-render projects if gui is open
+                        if (!document.getElementById('project-gui').classList.contains('hidden')) {
+                            renderProjects();
+                        }
                         resolve();
                     }, 1500));
 
@@ -221,6 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.classList.remove('admin-mode');
                     await printLine("LOGGING OUT... SESSION TERMINATED.");
                     await printLine("RETURNING TO GUEST MODE.");
+                    if (!document.getElementById('project-gui').classList.contains('hidden')) {
+                        renderProjects();
+                    }
                 } else {
                     await printLine("ALREADY IN GUEST MODE.");
                 }
@@ -299,6 +352,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 200);
             }
         }
+    });
+
+    // Close GUI button
+    document.getElementById('close-gui').addEventListener('click', () => {
+        document.getElementById('project-gui').classList.add('hidden');
     });
 
     // Start
