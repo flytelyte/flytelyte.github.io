@@ -1,134 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Personal Portfolio Website">
-    <title>My Portfolio</title>
-    <!-- Google Fonts -->
+    <meta name="description" content="Antigravity Terminal Portfolio">
+    <title>ANTIGRABITY TERMINAL</title>
+    <!-- Google Fonts: VT323 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <!-- Header / Navigation -->
-    <header class="header">
-        <div class="container header-container">
-            <a href="#" class="logo">MyPortfolio</a>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="#hero" class="nav-link">Home</a></li>
-                    <li><a href="#about" class="nav-link">About</a></li>
-                    <li><a href="#projects" class="nav-link">Projects</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
-                </ul>
-            </nav>
-            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
+    <div class="scanline"></div>
+    <div id="terminal-container">
+        <div id="output"></div>
+        <div id="input-line">
+            <span class="prompt">guest@antigrabity:~$</span>
+            <span id="typer"></span><span class="cursor">█</span>
         </div>
-    </header>
-
-    <main>
-        <!-- Hero Section -->
-        <section id="hero" class="hero section">
-            <div class="container hero-container">
-                <div class="hero-content fade-in">
-                    <h1 class="hero-title">Hello, I'm <span class="highlight">Your Name</span>.</h1>
-                    <p class="hero-subtitle">I build creative and responsive web experiences.</p>
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                </div>
-                <!-- Optional: Add a hero image or graphic here -->
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about section">
-            <div class="container">
-                <h2 class="section-title fade-in">About Me</h2>
-                <div class="about-content fade-in">
-                    <p class="about-text">
-                        I am a passionate developer with a knack for creating elegant solutions in the least amount of time. 
-                        I specialize in building accessible, semantic, and performant web applications.
-                    </p>
-                    <!-- Add skills or more details here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="projects section">
-            <div class="container">
-                <h2 class="section-title fade-in">My Projects</h2>
-                <div class="projects-grid">
-                    <!-- Project Card 1 -->
-                    <article class="project-card fade-in">
-                        <div class="project-image-placeholder"></div>
-                        <div class="project-info">
-                            <h3 class="project-title">Project One</h3>
-                            <p class="project-description">A brief description of the project goes here. It explains what the project does.</p>
-                            <div class="project-links">
-                                <a href="#" class="btn btn-small">Demo</a>
-                                <a href="#" class="btn btn-small btn-outline">Code</a>
-                            </div>
-                        </div>
-                    </article>
-                    <!-- Project Card 2 -->
-                    <article class="project-card fade-in">
-                        <div class="project-image-placeholder"></div>
-                        <div class="project-info">
-                            <h3 class="project-title">Project Two</h3>
-                            <p class="project-description">A brief description of the project goes here. It explains what the project does.</p>
-                            <div class="project-links">
-                                <a href="#" class="btn btn-small">Demo</a>
-                                <a href="#" class="btn btn-small btn-outline">Code</a>
-                            </div>
-                        </div>
-                    </article>
-                    <!-- Project Card 3 -->
-                    <article class="project-card fade-in">
-                        <div class="project-image-placeholder"></div>
-                        <div class="project-info">
-                            <h3 class="project-title">Project Three</h3>
-                            <p class="project-description">A brief description of the project goes here. It explains what the project does.</p>
-                            <div class="project-links">
-                                <a href="#" class="btn btn-small">Demo</a>
-                                <a href="#" class="btn btn-small btn-outline">Code</a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact section">
-            <div class="container">
-                <h2 class="section-title fade-in">Get In Touch</h2>
-                <div class="contact-content fade-in">
-                    <p>Interested in working together? Feel free to reach out!</p>
-                    <a href="mailto:email@example.com" class="btn btn-primary">Say Hello</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container footer-container">
-            <p>&copy; 2023 MyPortfolio. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" aria-label="GitHub">GitHub</a>
-                <a href="#" aria-label="LinkedIn">LinkedIn</a>
-                <a href="#" aria-label="Twitter">Twitter</a>
-            </div>
-        </div>
-    </footer>
-
+    </div>
     <script src="script.js"></script>
 </body>
+
 </html>
