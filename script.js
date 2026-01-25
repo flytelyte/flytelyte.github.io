@@ -138,7 +138,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Command Parser
-    function handleCommand(cmdRaw) {
+    async function handleCommand(cmdRaw) {
+        // Handle chained commands logic
+        if (cmdRaw.includes('&&')) {
+            const commands = cmdRaw.split('&&');
+            for (let i = 0; i < commands.length; i++) {
+                await handleCommand(commands[i].trim());
+                // Small delay between chained commands for effect
+                await new Promise(r => setTimeout(r, 300));
+            }
+            return;
+        }
+
         const parts = cmdRaw.trim().split(' ');
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1).join(' ');
@@ -155,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <span class="cmd-link" data-cmd="contact">contact</span>   - Establish communication ${!isAdmin ? '[LOCKED]' : ''}
     <span class="cmd-link" data-cmd="clear">clear</span>     - Clear terminal screen
     <span class="cmd-link" data-cmd="admin">admin</span>     - Request Root Access
+    <span class="cmd-link" data-cmd="exit">exit</span>      - Logout/Exit Admin Mode
     view [id] - View specific item
                 `);
                 break;
@@ -188,6 +200,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         printLine("<br>ACCESS GRANTED. WELCOME, ADMIN.");
                         printLine("SYSTEM UNLOCKED. FULL DATA ACCESS ENABLED.");
                     }, 1000);
+                }
+                break;
+            case 'exit':
+            case 'logout':
+                if (isAdmin) {
+                    isAdmin = false;
+                    document.body.classList.remove('admin-mode');
+                    printLine("LOGGING OUT... SESSION TERMINATED.");
+                    printLine("RETURNING TO GUEST MODE.");
+                } else {
+                    printLine("ALREADY IN GUEST MODE.");
                 }
                 break;
             case 'view':
