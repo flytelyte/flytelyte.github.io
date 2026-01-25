@@ -88,25 +88,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper: Print line to output
     function printLine(text, className = '', typing = false) {
-        const line = document.createElement('div');
-        if (className) line.className = className;
+        return new Promise((resolve) => {
+            const line = document.createElement('div');
+            if (className) line.className = className;
+            output.appendChild(line);
 
-        if (typing) {
-            output.appendChild(line);
-            let i = 0;
-            const interval = setInterval(() => {
-                line.innerHTML += text.charAt(i);
-                i++;
+            if (typing) {
+                let i = 0;
+                // Scroll to bottom immediately so user sees start
                 terminalContainer.scrollTop = terminalContainer.scrollHeight;
-                if (i >= text.length) clearInterval(interval);
-            }, 20);
-            return 50 * text.length; // Approximate duration
-        } else {
-            line.innerHTML = text;
-            output.appendChild(line);
-            terminalContainer.scrollTop = terminalContainer.scrollHeight;
-            return 0;
-        }
+
+                const interval = setInterval(() => {
+                    line.innerHTML += text.charAt(i);
+                    i++;
+                    terminalContainer.scrollTop = terminalContainer.scrollHeight;
+                    if (i >= text.length) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 20);
+            } else {
+                line.innerHTML = text;
+                terminalContainer.scrollTop = terminalContainer.scrollHeight;
+                resolve();
+            }
+        });
     }
 
     // Helper: Print ASCII Art
@@ -122,15 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
         inputLine.style.display = 'none';
 
         for (let text of bootText) {
-            printLine(text);
-            await new Promise(r => setTimeout(r, 400));
+            await printLine(text);
+            await new Promise(r => setTimeout(r, 100)); // Faster boot for UX
         }
 
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 200));
         printAscii();
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 500));
 
-        printLine("<br>Type 'help' for available commands.<br>");
+        await printLine("<br>Type 'help' for available commands.<br>");
 
         inputLine.style.display = 'flex';
         isBooting = false;
@@ -143,9 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cmdRaw.includes('&&')) {
             const commands = cmdRaw.split('&&');
             for (let i = 0; i < commands.length; i++) {
-                await handleCommand(commands[i].trim());
-                // Small delay between chained commands for effect
-                await new Promise(r => setTimeout(r, 300));
+                const subCmd = commands[i].trim();
+                if (subCmd) {
+                    await handleCommand(subCmd);
+                    // Small delay between chained commands for effect
+                    await new Promise(r => setTimeout(r, 300));
+                }
             }
             return;
         }
@@ -154,11 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1).join(' ');
 
-        printLine(`<span class="prompt">${isAdmin ? 'admin' : 'guest'}@antigrabity:~$</span> ${cmdRaw}`);
+        await printLine(`<span class="prompt">${isAdmin ? 'admin' : 'guest'}@antigrabity:~$</span> ${cmdRaw}`);
 
         switch (cmd) {
             case 'help':
-                printLine(`
+                await printLine(`
     AVAILABLE COMMANDS:
     -------------------
     <span class="cmd-link" data-cmd="about">about</span>     - View user identity
@@ -173,33 +182,36 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'ls':
             case 'projects':
                 if (isAdmin) {
-                    printLine(fileSystem['projects_admin']);
+                    await printLine(fileSystem['projects_admin']);
                 } else {
-                    printLine(fileSystem['projects']);
+                    await printLine(fileSystem['projects']);
                 }
                 break;
             case 'about':
             case 'whoami':
-                printLine(fileSystem['about']);
+                await printLine(fileSystem['about']);
                 break;
             case 'contact':
                 if (isAdmin) {
-                    printLine(fileSystem['contact_admin']);
+                    await printLine(fileSystem['contact_admin']);
                 } else {
-                    printLine(fileSystem['contact']);
+                    await printLine(fileSystem['contact']);
                 }
                 break;
             case 'admin':
                 if (isAdmin) {
-                    printLine("ALREADY AUTHENTICATED AS ADMIN.");
+                    await printLine("ALREADY AUTHENTICATED AS ADMIN.");
                 } else {
-                    printLine("AUTHENTICATING...", "", true);
-                    setTimeout(() => {
+                    await printLine("AUTHENTICATING...", "", true);
+                    // Actual implementation of the delay logic
+                    await new Promise(resolve => setTimeout(() => {
                         isAdmin = true;
                         document.body.classList.add('admin-mode');
-                        printLine("<br>ACCESS GRANTED. WELCOME, ADMIN.");
-                        printLine("SYSTEM UNLOCKED. FULL DATA ACCESS ENABLED.");
-                    }, 1000);
+                        resolve();
+                    }, 1500));
+
+                    await printLine("<br>ACCESS GRANTED. WELCOME, ADMIN.");
+                    await printLine("SYSTEM UNLOCKED. FULL DATA ACCESS ENABLED.");
                 }
                 break;
             case 'exit':
@@ -207,20 +219,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isAdmin) {
                     isAdmin = false;
                     document.body.classList.remove('admin-mode');
-                    printLine("LOGGING OUT... SESSION TERMINATED.");
-                    printLine("RETURNING TO GUEST MODE.");
+                    await printLine("LOGGING OUT... SESSION TERMINATED.");
+                    await printLine("RETURNING TO GUEST MODE.");
                 } else {
-                    printLine("ALREADY IN GUEST MODE.");
+                    await printLine("ALREADY IN GUEST MODE.");
                 }
                 break;
             case 'view':
                 if (!isAdmin) {
-                    printLine(`ACCESS DENIED. AUTHORIZATION REQUIRED FOR OBJECT: '${args}'`);
+                    await printLine(`ACCESS DENIED. AUTHORIZATION REQUIRED FOR OBJECT: '${args}'`);
                 } else {
                     if (fileSystem[args]) {
-                        printLine(fileSystem[args]);
+                        await printLine(fileSystem[args]);
                     } else {
-                        printLine(`Error: Object '${args}' not found.`);
+                        await printLine(`Error: Object '${args}' not found.`);
                     }
                 }
                 break;
@@ -231,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case '':
                 break;
             default:
-                printLine(`Command not found: ${cmd}. Type 'help' for assistance.`);
+                await printLine(`Command not found: ${cmd}. Type 'help' for assistance.`);
         }
 
         terminalContainer.scrollTop = terminalContainer.scrollHeight;
