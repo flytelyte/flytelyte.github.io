@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputLine = document.getElementById('input-line');
 
     let isBooting = true;
+    let isAdmin = false; // Admin state
     let currentInput = '';
 
     // ASCII Art Logo
@@ -39,6 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'projects': `
     <span class="uppercase">Listing Projects...</span>
     
+    1. <span class="cmd-link" data-cmd="view project-one">PROJECT_ONE</span>  -  [ENCRYPTED]
+    2. <span class="cmd-link" data-cmd="view project-two">PROJECT_TWO</span>  -  [ENCRYPTED]
+    3. <span class="cmd-link" data-cmd="view project-three">PROJECT_THREE</span> -  [ENCRYPTED]
+    
+    <span class="error">ACCESS DENIED. Run 'admin' to authenticate.</span>
+        `,
+        'projects_admin': `
+    <span class="uppercase">Listing Projects [ADMIN ACCESS]...</span>
+    
     1. <span class="cmd-link" data-cmd="view project-one">PROJECT_ONE</span>  -  [Secure comms uplink interface]
     2. <span class="cmd-link" data-cmd="view project-two">PROJECT_TWO</span>  -  [Retro-futuristic data visualizer]
     3. <span class="cmd-link" data-cmd="view project-three">PROJECT_THREE</span> -  [Autonomous drone control dashboard]
@@ -47,6 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
         `,
         'contact': `
     <span class="uppercase">Comms Link:</span>
+    
+    <span class="error">CONTACT INFO REDACTED. AUTHORIZATION REQUIRED.</span>
+        `,
+        'contact_admin': `
+    <span class="uppercase">Comms Link [SECURE]:</span>
     
     Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a>
     GitHub: <a href="#" target="_blank">github.com/antigrabity</a>
@@ -128,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1).join(' ');
 
-        printLine(`<span class="prompt">guest@antigrabity:~$</span> ${cmdRaw}`);
+        printLine(`<span class="prompt">${isAdmin ? 'admin' : 'guest'}@antigrabity:~$</span> ${cmdRaw}`);
 
         switch (cmd) {
             case 'help':
@@ -136,33 +151,59 @@ document.addEventListener('DOMContentLoaded', () => {
     AVAILABLE COMMANDS:
     -------------------
     <span class="cmd-link" data-cmd="about">about</span>     - View user identity
-    <span class="cmd-link" data-cmd="projects">projects</span>  - List projects
-    <span class="cmd-link" data-cmd="contact">contact</span>   - Establish communication
+    <span class="cmd-link" data-cmd="projects">projects</span>  - List projects ${!isAdmin ? '[LOCKED]' : ''}
+    <span class="cmd-link" data-cmd="contact">contact</span>   - Establish communication ${!isAdmin ? '[LOCKED]' : ''}
     <span class="cmd-link" data-cmd="clear">clear</span>     - Clear terminal screen
+    <span class="cmd-link" data-cmd="admin">admin</span>     - Request Root Access
     view [id] - View specific item
                 `);
                 break;
             case 'ls':
             case 'projects':
-                printLine(fileSystem['projects']);
+                if (isAdmin) {
+                    printLine(fileSystem['projects_admin']);
+                } else {
+                    printLine(fileSystem['projects']);
+                }
                 break;
             case 'about':
             case 'whoami':
                 printLine(fileSystem['about']);
                 break;
             case 'contact':
-                printLine(fileSystem['contact']);
+                if (isAdmin) {
+                    printLine(fileSystem['contact_admin']);
+                } else {
+                    printLine(fileSystem['contact']);
+                }
+                break;
+            case 'admin':
+                if (isAdmin) {
+                    printLine("ALREADY AUTHENTICATED AS ADMIN.");
+                } else {
+                    printLine("AUTHENTICATING...", "", true);
+                    setTimeout(() => {
+                        isAdmin = true;
+                        document.body.classList.add('admin-mode');
+                        printLine("<br>ACCESS GRANTED. WELCOME, ADMIN.");
+                        printLine("SYSTEM UNLOCKED. FULL DATA ACCESS ENABLED.");
+                    }, 1000);
+                }
                 break;
             case 'view':
-                if (fileSystem[args]) {
-                    printLine(fileSystem[args]);
+                if (!isAdmin) {
+                    printLine(`ACCESS DENIED. AUTHORIZATION REQUIRED FOR OBJECT: '${args}'`);
                 } else {
-                    printLine(`Error: Object '${args}' not found.`);
+                    if (fileSystem[args]) {
+                        printLine(fileSystem[args]);
+                    } else {
+                        printLine(`Error: Object '${args}' not found.`);
+                    }
                 }
                 break;
             case 'clear':
                 output.innerHTML = '';
-                printAscii(); // Keep logo maybe? Or full clear. Let's keep logic simple.
+                // printAscii(); // Optional: don't reprint logo on clear for cleaner look
                 break;
             case '':
                 break;
