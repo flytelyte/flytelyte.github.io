@@ -57,6 +57,90 @@ body.admin-mode {
     /* Change text color to Red/Pink for Admin Mode */
 }
 
+/* External Project GUI */
+#project-gui {
+    position: fixed;
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%);
+    width: 300px;
+    height: 600px;
+    background-color: rgba(13, 13, 13, 0.95);
+    border: 2px solid var(--text-color);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+#project-gui.hidden {
+    display: none;
+}
+
+.gui-header {
+    border-bottom: 1px solid var(--text-color);
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+#close-gui {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-family: var(--font-stack);
+    font-size: 1.2rem;
+}
+
+.project-grid {
+    display: grid;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.project-card {
+    border: 1px solid var(--text-color);
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.project-card:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.project-card h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.project-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+body.admin-mode #project-gui {
+    border-color: #ff0055;
+    box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
+}
+
+body.admin-mode .gui-header,
+body.admin-mode .project-card {
+    border-color: #ff0055;
+}
+
+body.admin-mode .project-card:hover {
+    background: #ff0055;
+    color: var(--bg-color);
+}
+
 /* Scanline Overlay */
 .scanline {
     position: fixed;
