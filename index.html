@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Antigravity Terminal Portfolio">
-    <title>ANTIGRABITY TERMINAL</title>
+    <meta name="description" content="Antigravity Portfolio">
+    <title>ANTIGRABITY | Digital Architect</title>
     <!-- Google Fonts: VT323 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,24 +16,82 @@
 <body>
     <div class="scanline"></div>
 
-    <!-- External Project GUI -->
-    <div id="project-gui" class="hidden">
-        <div class="gui-header">
-            <span>PROJECT_DATABASE // SECURE_VIEW</span>
-            <button id="close-gui">[X]</button>
+    <nav class="main-nav">
+        <a href="#" class="logo">ANTIGRABITY_CORE</a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
+            <a href="#terminal-section">[TERMINAL]</a>
         </div>
-        <div class="project-grid" id="project-grid">
-            <!-- Cards injected via JS -->
-        </div>
-    </div>
+    </nav>
 
-    <div id="terminal-container">
-        <div id="output"></div>
-        <div id="input-line">
-            <span class="prompt">guest@antigrabity:~$</span>
-            <span id="typer"></span><span class="cursor">█</span>
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1>DIGITAL ARCHITECT</h1>
+                <p class="glitch-text" data-text="BUILDING THE FUTURE BIT BY BIT">BUILDING THE FUTURE BIT BY BIT</p>
+                <p>Specializing in Brutalist Web Design & Systems Engineering.</p>
+                <a href="#work" class="cta-button">VIEW_PROJECTS</a>
+            </div>
+        </section>
+
+        <section id="about" class="container">
+            <h2>// ABOUT_SYSTEM</h2>
+            <div class="content-block">
+                <p>Identify: ANTIGRAVITY AGENT</p>
+                <p>Role: Lead Frontend Engineer</p>
+                <p>I am a digital architect obsessed with the raw aesthetic of early computing. I build web experiences
+                    that are not just viewed, but traversed.</p>
+            </div>
+        </section>
+
+        <section id="work" class="container">
+            <h2>// PROJECT_DATABASE</h2>
+            <div class="projects-grid">
+                <article class="project-card">
+                    <h3>PROJECT_ONE</h3>
+                    <p>Secure comms uplink interface with real-time encryption. Built with React and WebSockets.</p>
+                    <a href="project1.html" class="read-more">ACCESS_FILE >></a>
+                </article>
+
+                <article class="project-card">
+                    <h3>PROJECT_TWO</h3>
+                    <p>High-fidelity data visualization tool using D3.js and WebGL. Renders millions of data points.</p>
+                    <a href="project2.html" class="read-more">ACCESS_FILE >></a>
+                </article>
+
+                <article class="project-card">
+                    <h3>PROJECT_THREE</h3>
+                    <p>Dashboard for monitoring and controlling autonomous drone swarms via MQTT.</p>
+                    <a href="project3.html" class="read-more">ACCESS_FILE >></a>
+                </article>
+            </div>
+        </section>
+
+        <section id="contact" class="container">
+            <h2>// COMM_LINK</h2>
+            <div class="content-block">
+                <p>Secure transmission lines are open.</p>
+                <p>Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a></p>
+                <p>GitHub: <a href="#" target="_blank">github.com/antigrabity</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer id="terminal-section">
+        <div class="terminal-header">
+            <span>TERMINAL_ACCESS // GUEST_MODE</span>
         </div>
-    </div>
+        <div id="terminal-container">
+            <div id="output"></div>
+            <div id="input-line">
+                <span class="prompt">guest@antigrabity:~$</span>
+                <span id="typer"></span><span class="cursor">█</span>
+            </div>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 

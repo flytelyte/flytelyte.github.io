@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const typer = document.getElementById('typer');
     const inputLine = document.getElementById('input-line');
 
-    let isBooting = true;
     let isAdmin = false; // Admin state
     let currentInput = '';
 
@@ -17,15 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 /_/ |_/_/|_/  /_/   /___/ /_/ /_/  /_/ |_| /_/|_| /_/ |_/____//___/ /_/ /_/  
                                                                              
     `;
-
-    const bootText = [
-        "BIOS CHECK... OK",
-        "LOADING KERNEL... OK",
-        "MOUNTING FILE SYSTEM... OK",
-        "INITIALIZING VIDEO ADAPTER... OK",
-        "MOUNTING ANTIGRABITY_CORE... OK",
-        "WELCOME TO ANTIGRABITY TERMINAL V1.0"
-    ];
 
     // File System / Content
     const fileSystem = {
@@ -52,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <span class="uppercase">PROJECT_ONE</span>
     -------------------------
     A specialized interface for encrypted communication. Built with React and WebSockets.
-    Features real-time key exchange and steganographic encoding.
+    Features real-time key exchange and steganographic encryption.
         `,
         'project-two': `
     <span class="uppercase">PROJECT_TWO</span>
@@ -68,70 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `
     };
 
-    const projectsData = [
-        {
-            id: 'project-one',
-            title: 'PROJECT_ONE',
-            description: 'Secure comms uplink interface with real-time encryption.'
-        },
-        {
-            id: 'project-two',
-            title: 'PROJECT_TWO',
-            description: 'Retro-futuristic data visualizer using WebGL.'
-        },
-        {
-            id: 'project-three',
-            title: 'PROJECT_THREE',
-            description: 'Autonomous drone control dashboard.'
-        }
-    ];
-
-    function scrambleText(text) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-        return text.split('').map(char => {
-            if (char === ' ') return ' ';
-            return chars[Math.floor(Math.random() * chars.length)];
-        }).join('');
-    }
-
-    function renderProjects() {
-        const grid = document.getElementById('project-grid');
-        grid.innerHTML = '';
-
-        projectsData.forEach(proj => {
-            const card = document.createElement('div');
-            card.className = 'project-card';
-
-            const desc = isAdmin ? proj.description : scrambleText(proj.description);
-            const extraClass = isAdmin ? '' : 'encrypted';
-
-            card.innerHTML = `
-                <h3>${proj.title}</h3>
-                <p class="${extraClass}">${desc}</p>
-            `;
-
-            card.addEventListener('click', () => {
-                // Execute view command
-                // Close GUI first? Or keep it open? 
-                // UX: running a command usually happens in terminal. 
-                // Let's close GUI to show the "result" in terminal
-                document.getElementById('project-gui').classList.add('hidden');
-
-                // Simulate typing view command
-                const cmd = `view ${proj.id}`;
-                currentInput = cmd;
-                updateTyper();
-                setTimeout(() => {
-                    handleCommand(cmd);
-                    currentInput = '';
-                    updateTyper();
-                }, 200);
-            });
-
-            grid.appendChild(card);
-        });
-    }
-
     // Helper: Print line to output
     function printLine(text, className = '', typing = false) {
         return new Promise((resolve) => {
@@ -141,9 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (typing) {
                 let i = 0;
-                // Scroll to bottom immediately so user sees start
                 terminalContainer.scrollTop = terminalContainer.scrollHeight;
-
                 const interval = setInterval(() => {
                     line.innerHTML += text.charAt(i);
                     i++;
@@ -152,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearInterval(interval);
                         resolve();
                     }
-                }, 20);
+                }, 10);
             } else {
                 line.innerHTML = text;
                 terminalContainer.scrollTop = terminalContainer.scrollHeight;
@@ -161,50 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Helper: Print ASCII Art
-    function printAscii() {
-        const asciiContainer = document.createElement('div');
-        asciiContainer.className = 'ascii-art';
-        asciiContainer.textContent = logo;
-        output.appendChild(asciiContainer);
-    }
-
-    // Boot Sequence controls
-    async function boot() {
-        inputLine.style.display = 'none';
-
-        for (let text of bootText) {
-            await printLine(text);
-            await new Promise(r => setTimeout(r, 100)); // Faster boot for UX
-        }
-
-        await new Promise(r => setTimeout(r, 200));
-        printAscii();
-        await new Promise(r => setTimeout(r, 500));
-
-        await printLine("<br>Type 'help' for available commands.<br>");
-
-        inputLine.style.display = 'flex';
-        isBooting = false;
-        focusInput();
-    }
-
     // Command Parser
     async function handleCommand(cmdRaw) {
-        // Handle chained commands logic
-        if (cmdRaw.includes('&&')) {
-            const commands = cmdRaw.split('&&');
-            for (let i = 0; i < commands.length; i++) {
-                const subCmd = commands[i].trim();
-                if (subCmd) {
-                    await handleCommand(subCmd);
-                    // Small delay between chained commands for effect
-                    await new Promise(r => setTimeout(r, 300));
-                }
-            }
-            return;
-        }
-
         const parts = cmdRaw.trim().split(' ');
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1).join(' ');
@@ -216,22 +98,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 await printLine(`
     AVAILABLE COMMANDS:
     -------------------
-    <span class="cmd-link" data-cmd="about">about</span>     - View user identity
-    <span class="cmd-link" data-cmd="projects">projects</span>  - List projects ${!isAdmin ? '[LOCKED]' : ''}
-    <span class="cmd-link" data-cmd="contact">contact</span>   - Establish communication ${!isAdmin ? '[LOCKED]' : ''}
-    <span class="cmd-link" data-cmd="clear">clear</span>     - Clear terminal screen
-    <span class="cmd-link" data-cmd="admin">admin</span>     - Request Root Access
-    <span class="cmd-link" data-cmd="exit">exit</span>      - Logout/Exit Admin Mode
-    view [id] - View specific item
+    about       - View user identity
+    projects    - List projects (synced with main display)
+    contact     - Establish communication
+    clear       - Clear terminal screen
+    admin       - Request Root Access
+    exit        - Logout/Exit Admin Mode
+    view [id]   - View specific item info
                 `);
                 break;
             case 'ls':
             case 'projects':
-                await printLine("INITIALIZING PROJECT DATABASE GUI...", "", true);
-                setTimeout(() => {
-                    renderProjects();
-                    document.getElementById('project-gui').classList.remove('hidden');
-                }, 500);
+                await printLine("PROJECTS LOCATED IN MAIN MEMORY:");
+                await printLine("- PROJECT_ONE");
+                await printLine("- PROJECT_TWO");
+                await printLine("- PROJECT_THREE");
+                await printLine("USE 'view [project-id]' FOR DETAILS OR SCROLL UP.");
                 break;
             case 'about':
             case 'whoami':
@@ -249,19 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     await printLine("ALREADY AUTHENTICATED AS ADMIN.");
                 } else {
                     await printLine("AUTHENTICATING...", "", true);
-                    // Actual implementation of the delay logic
                     await new Promise(resolve => setTimeout(() => {
                         isAdmin = true;
                         document.body.classList.add('admin-mode');
-                        // Re-render projects if gui is open
-                        if (!document.getElementById('project-gui').classList.contains('hidden')) {
-                            renderProjects();
-                        }
                         resolve();
-                    }, 1500));
-
+                    }, 1000));
                     await printLine("<br>ACCESS GRANTED. WELCOME, ADMIN.");
-                    await printLine("SYSTEM UNLOCKED. FULL DATA ACCESS ENABLED.");
                 }
                 break;
             case 'exit':
@@ -270,95 +145,60 @@ document.addEventListener('DOMContentLoaded', () => {
                     isAdmin = false;
                     document.body.classList.remove('admin-mode');
                     await printLine("LOGGING OUT... SESSION TERMINATED.");
-                    await printLine("RETURNING TO GUEST MODE.");
-                    if (!document.getElementById('project-gui').classList.contains('hidden')) {
-                        renderProjects();
-                    }
                 } else {
                     await printLine("ALREADY IN GUEST MODE.");
                 }
                 break;
             case 'view':
-                if (!isAdmin) {
-                    await printLine(`ACCESS DENIED. AUTHORIZATION REQUIRED FOR OBJECT: '${args}'`);
+                if (fileSystem[args]) {
+                    await printLine(fileSystem[args]);
                 } else {
-                    if (fileSystem[args]) {
-                        await printLine(fileSystem[args]);
-                    } else {
-                        await printLine(`Error: Object '${args}' not found.`);
-                    }
+                    await printLine(`Error: Object '${args}' not found.`);
                 }
                 break;
             case 'clear':
                 output.innerHTML = '';
-                // printAscii(); // Optional: don't reprint logo on clear for cleaner look
                 break;
             case '':
                 break;
             default:
                 await printLine(`Command not found: ${cmd}. Type 'help' for assistance.`);
         }
-
-        terminalContainer.scrollTop = terminalContainer.scrollHeight;
     }
 
     // Input Handling
     function updateTyper() {
+        typer.text = currentInput;
         typer.textContent = currentInput;
     }
 
-    function focusInput() {
-        // Just ensures we are ready to type, maybe scroll to bottom
-        terminalContainer.scrollTop = terminalContainer.scrollHeight;
-    }
+    // Initial Message
+    (async () => {
+        await printLine("ANTIGRABITY TERMINAL V1.0 INITIALIZED.");
+        await printLine("TYPE 'help' FOR COMMANDS.");
+    })();
 
-    // Global Key Listener
+    // Global Key Listener (only if terminal is visible/focused? No, keeping it global for "hacky" feel but respecting scroll)
+    // Actually, let's bind it only when typing doesn't interfere? 
+    // For now, let's keep it global but maybe add a listener to the input area or just document.
     document.addEventListener('keydown', (e) => {
-        if (isBooting) return;
+        // Prevent typing if ctrl/meta keys are pressed
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-        // Special keys
         if (e.key === 'Enter') {
             handleCommand(currentInput);
             currentInput = '';
             updateTyper();
+            e.preventDefault();
         } else if (e.key === 'Backspace') {
             currentInput = currentInput.slice(0, -1);
             updateTyper();
-        } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        } else if (e.key.length === 1) {
             currentInput += e.key;
             updateTyper();
-        }
 
-        // Keep focus visible
-        focusInput();
-    });
-
-    // Delegate clicks on .cmd-link using event delegation
-    // This allows dynamically created links to work
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('cmd-link')) {
-            const cmd = e.target.getAttribute('data-cmd');
-            if (cmd) {
-                // Simulate typing? Or just run it. 
-                // Spec says "simulate the typing of that command".
-                // Let's just run it for instant gratification or we can animate it.
-                // Instant is better UX for clicks usually, but let's be cool.
-                currentInput = cmd;
-                updateTyper();
-                setTimeout(() => {
-                    handleCommand(cmd);
-                    currentInput = '';
-                    updateTyper();
-                }, 200);
-            }
+            // Auto-scroll to terminal if typing starts? Maybe annoying.
+            // Let's only scroll if checks
         }
     });
-
-    // Close GUI button
-    document.getElementById('close-gui').addEventListener('click', () => {
-        document.getElementById('project-gui').classList.add('hidden');
-    });
-
-    // Start
-    boot();
 });
