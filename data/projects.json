@@ -1,14 +1,19 @@
 [
     {
         "id": "project-one",
-        "title": "PROJECT_ONE",
-        "name": "Secure Uplink",
+        "title": "First Project",
+        "name": "First Project for the portfolio",
         "subtitle": "React / WebSockets / Encryption",
         "brief": "A specialized interface for encrypted communication. This project was built to demonstrate real-time secure messaging capabilities using standard web technologies.",
         "specs": [
-            { "label": "Protocol", "value": "WebSocket (WSS)" },
-            { "label": "Encryption", "value": "AES-256 Client-Side" },
-            { "label": "UI/UX", "value": "React with minimalist brutality" }
+            {
+                "label": "Protocol",
+                "value": "WebSocket (WSS)"
+            },
+            {
+                "label": "UI/UX",
+                "value": "React with minimalist brutality"
+            }
         ],
         "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]"
     },
@@ -19,9 +24,18 @@
         "subtitle": "D3.js / WebGL / Big Data",
         "brief": "High-fidelity data visualization tool. This application ingests massive datasets and renders them in a 3D space for easier analysis and pattern recognition.",
         "specs": [
-            { "label": "Rendering", "value": "Three.js / WebGL" },
-            { "label": "Data Processing", "value": "Python Backend Stream" },
-            { "label": "Performance", "value": "60fps at 1M+ points" }
+            {
+                "label": "Rendering",
+                "value": "Three.js / WebGL"
+            },
+            {
+                "label": "Data Processing",
+                "value": "Python Backend Stream"
+            },
+            {
+                "label": "Performance",
+                "value": "60fps at 1M+ points"
+            }
         ],
         "demo_text": "[3D DATA CLOUD VISUALIZATION]"
     },
@@ -32,9 +46,18 @@
         "subtitle": "Vue.js / MQTT / IoT",
         "brief": "Dashboard for monitoring and controlling autonomous drone swarms. Provides telemetry data, battery status, and GPS coordinates in real-time.",
         "specs": [
-            { "label": "Communication", "value": "MQTT over WebSockets" },
-            { "label": "Framework", "value": "Vue 3 Composition API" },
-            { "label": "Hardware", "value": "ESP32 Controller Interface" }
+            {
+                "label": "Communication",
+                "value": "MQTT over WebSockets"
+            },
+            {
+                "label": "Framework",
+                "value": "Vue 3 Composition API"
+            },
+            {
+                "label": "Hardware",
+                "value": "ESP32 Controller Interface"
+            }
         ],
         "demo_text": "[DRONE SWARM TELEMETRY GRID]"
     }

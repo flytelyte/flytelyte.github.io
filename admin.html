@@ -107,6 +107,32 @@
             margin-top: 1rem;
             height: 1.5rem;
         }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .editor-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .btn-save {
+            background-color: blue;
+            /* User requested Blue */
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-save:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 
@@ -127,6 +153,14 @@
 
             <section class="editor-panel">
                 <form id="edit-form">
+                    <div class="editor-header">
+                        <span class="editor-title">EDIT_RECORD //</span>
+                        <button type="submit" class="btn btn-save">SAVE_CHANGES</button>
+                    </div>
+
+                    <div id="status" class="status-msg"
+                        style="margin-top: -1rem; margin-bottom: 1rem; text-align: right;"></div>
+
                     <div class="form-group">
                         <label>ID (Read Only)</label>
                         <input type="text" id="p-id" readonly style="opacity: 0.7;">
@@ -158,9 +192,6 @@
                         <label>Demo Placeholder Text</label>
                         <input type="text" id="p-demo">
                     </div>
-
-                    <button type="submit" class="btn">SAVE_CHANGES</button>
-                    <div id="status" class="status-msg"></div>
                 </form>
             </section>
         </div>
