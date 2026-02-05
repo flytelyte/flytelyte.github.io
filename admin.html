@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN_PANEL | Antigravity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            height: calc(100vh - 150px);
+        }
+
+        .project-list {
+            border: 1px solid var(--primary-color);
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .project-item {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .project-item:hover,
+        .project-item.active {
+            background: rgba(0, 255, 65, 0.1);
+            padding-left: 1rem;
+        }
+
+        .editor-panel {
+            border: 1px solid var(--primary-color);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        .specs-editor {
+            margin-top: 1rem;
+            border: 1px dashed var(--primary-color);
+            padding: 1rem;
+        }
+
+        .spec-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: black;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .status-msg {
+            margin-top: 1rem;
+            height: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanline"></div>
+    <nav class="main-nav">
+        <a href="index.html" class="logo">ANTIGRABITY_CORE // ADMIN</a>
+        <div class="nav-links">
+            <a href="index.html">View Site</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="admin-layout">
+            <aside class="project-list" id="project-list">
+                <!-- List Items -->
+            </aside>
+
+            <section class="editor-panel">
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label>ID (Read Only)</label>
+                        <input type="text" id="p-id" readonly style="opacity: 0.7;">
+                    </div>
+                    <div class="form-group">
+                        <label>Project Title (e.g. PROJECT_ONE)</label>
+                        <input type="text" id="p-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Name (e.g. Secure Uplink)</label>
+                        <input type="text" id="p-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Subtitle / Tech Stack</label>
+                        <input type="text" id="p-subtitle">
+                    </div>
+                    <div class="form-group">
+                        <label>Brief Description</label>
+                        <textarea id="p-brief"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Technical Specs</label>
+                        <div id="specs-container"></div>
+                        <button type="button" class="btn btn-outline" onclick="addSpecRow()">+ Add Spec</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Demo Placeholder Text</label>
+                        <input type="text" id="p-demo">
+                    </div>
+
+                    <button type="submit" class="btn">SAVE_CHANGES</button>
+                    <div id="status" class="status-msg"></div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        let projects = [];
+        let currentProjectIndex = -1;
+
+        async function init() {
+            try {
+                const res = await fetch('data/projects.json');
+                projects = await res.json();
+                renderList();
+                if (projects.length > 0) selectProject(0);
+            } catch (e) {
+                console.error(e);
+                alert("Failed to load projects.");
+            }
+        }
+
+        function renderList() {
+            const list = document.getElementById('project-list');
+            list.innerHTML = projects.map((p, index) => `
+                <div class="project-item ${index === currentProjectIndex ? 'active' : ''}" 
+                     onclick="selectProject(${index})">
+                    > ${p.title}
+                </div>
+            `).join('');
+        }
+
+        function selectProject(index) {
+            currentProjectIndex = index;
+            const p = projects[index];
+            renderList();
+
+            document.getElementById('p-id').value = p.id;
+            document.getElementById('p-title').value = p.title;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-subtitle').value = p.subtitle;
+            document.getElementById('p-brief').value = p.brief;
+            document.getElementById('p-demo').value = p.demo_text || '';
+
+            renderSpecs(p.specs || []);
+        }
+
+        function renderSpecs(specs) {
+            const container = document.getElementById('specs-container');
+            container.innerHTML = '';
+            specs.forEach((spec, idx) => {
+                const row = document.createElement('div');
+                row.className = 'spec-row';
+                row.innerHTML = `
+                    <input type="text" placeholder="Label" value="${spec.label}" onchange="updateSpec(${idx}, 'label', this.value)">
+                    <input type="text" placeholder="Value" value="${spec.value}" onchange="updateSpec(${idx}, 'value', this.value)">
+                    <button type="button" class="btn-outline" onclick="removeSpec(${idx})">X</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addSpecRow() {
+            if (currentProjectIndex === -1) return;
+            if (!projects[currentProjectIndex].specs) projects[currentProjectIndex].specs = [];
+            projects[currentProjectIndex].specs.push({ label: '', value: '' });
+            renderSpecs(projects[currentProjectIndex].specs);
+        }
+
+        window.updateSpec = (specIdx, field, val) => {
+            projects[currentProjectIndex].specs[specIdx][field] = val;
+        }
+
+        window.removeSpec = (specIdx) => {
+            projects[currentProjectIndex].specs.splice(specIdx, 1);
+            renderSpecs(projects[currentProjectIndex].specs);
+        }
+
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Update current object with form values
+            const p = projects[currentProjectIndex];
+            p.title = document.getElementById('p-title').value;
+            p.name = document.getElementById('p-name').value;
+            p.subtitle = document.getElementById('p-subtitle').value;
+            p.brief = document.getElementById('p-brief').value;
+            p.demo_text = document.getElementById('p-demo').value;
+
+            // Save to server
+            const statusEl = document.getElementById('status');
+            statusEl.innerText = "SAVING...";
+
+            try {
+                const res = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projects)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    statusEl.innerText = "SUCCESS: SYSTEM UPDATED.";
+                    statusEl.style.color = "var(--primary-color)";
+                    renderList();
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = "ERROR: SAVE FAILED.";
+                statusEl.style.color = "red";
+            }
+        });
+
+        init();
+    </script>
+</body>
+
+</html>

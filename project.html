@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project | Antigravity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="project-page">
+    <div class="scanline"></div>
+
+    <nav class="main-nav">
+        <a href="index.html" class="logo">ANTIGRABITY_CORE</a>
+        <div class="nav-links">
+            <a href="index.html#work">Work</a>
+            <a href="index.html#terminal-section">Terminal</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="project-header">
+            <h1 id="p-title">LOADING...</h1>
+            <p class="subtitle" id="p-subtitle"></p>
+        </header>
+
+        <section class="project-content">
+            <div class="project-info">
+                <h2>// MISSION_BRIEF</h2>
+                <p id="p-brief"></p>
+
+                <h2>// TECHNICAL_SPECS</h2>
+                <ul id="p-specs">
+                </ul>
+            </div>
+
+            <div class="project-demo">
+                <div class="demo-placeholder" id="p-demo">
+                </div>
+            </div>
+        </section>
+
+        <div class="back-link">
+            <a href="index.html">
+                << RETURN_TO_BASE</a>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Dynamic Content Loading
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const projectId = params.get('id');
+
+            if (!projectId) {
+                document.querySelector('.project-header h1').innerText = 'ERROR: MISSING_ID';
+                return;
+            }
+
+            try {
+                const response = await fetch('data/projects.json');
+                const projects = await response.json();
+                const project = projects.find(p => p.id === projectId);
+
+                if (project) {
+                    document.title = `${project.name} | Antigravity`;
+                    document.getElementById('p-title').innerText = `${project.title}: ${project.name}`;
+                    document.getElementById('p-subtitle').innerText = project.subtitle;
+                    document.getElementById('p-brief').innerText = project.brief;
+                    document.getElementById('p-demo').innerText = project.demo_text;
+
+                    const specsList = document.getElementById('p-specs');
+                    specsList.innerHTML = project.specs.map(s =>
+                        `<li><strong>${s.label}:</strong> ${s.value}</li>`
+                    ).join('');
+                } else {
+                    document.querySelector('.project-header h1').innerText = 'ERROR: PROJECT_NOT_FOUND';
+                }
+            } catch (error) {
+                console.error('Failed to load project data', error);
+                document.querySelector('.project-header h1').innerText = 'ERROR: DATA_CORRUPTION';
+            }
+        });
+    </script>
+</body>
+
+</html>

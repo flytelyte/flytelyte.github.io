@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     // File System / Content
-    const fileSystem = {
+    let fileSystem = {
         'about': `
     <span class="uppercase">Identify:</span> ANTIGRAVITY AGENT
     <span class="uppercase">Role:</span> Lead Frontend Engineer
@@ -37,26 +37,48 @@ document.addEventListener('DOMContentLoaded', () => {
     
     Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a>
     GitHub: <a href="#" target="_blank">github.com/antigrabity</a>
-        `,
-        'project-one': `
-    <span class="uppercase">PROJECT_ONE</span>
-    -------------------------
-    A specialized interface for encrypted communication. Built with React and WebSockets.
-    Features real-time key exchange and steganographic encryption.
-        `,
-        'project-two': `
-    <span class="uppercase">PROJECT_TWO</span>
-    -------------------------
-    High-fidelity data visualization tool using D3.js and WebGL. 
-    Renders millions of data points with zero latency.
-        `,
-        'project-three': `
-    <span class="uppercase">PROJECT_THREE</span>
-    -------------------------
-    Dashboard for monitoring and controlling autonomous drone swarms.
-    Implemented with Vue.js and MQTT.
         `
     };
+
+    // Fetch Projects and Populate System
+    async function loadSystemData() {
+        try {
+            const response = await fetch('data/projects.json');
+            const projects = await response.json();
+
+            // Populate File System for Terminal
+            projects.forEach(p => {
+                fileSystem[p.id] = `
+    <span class="uppercase">${p.title}</span>
+    -------------------------
+    ${p.brief}
+    <a href="project.html?id=${p.id}" style="color:var(--primary-color)">[OPEN_GUI]</a>
+                `;
+            });
+
+            // Populate Grid if on Index Page
+            const grid = document.getElementById('projects-grid-container');
+            if (grid) {
+                grid.innerHTML = projects.map(p => `
+                <article class="project-card">
+                    <h3>${p.title}</h3>
+                    <p>${p.subtitle}</p>
+                    <p class="card-brief">${p.brief.substring(0, 100)}...</p>
+                    <a href="project.html?id=${p.id}" class="read-more">ACCESS_FILE >></a>
+                </article>
+                `).join('');
+            }
+
+            return projects;
+        } catch (e) {
+            console.error("System Failure: Data Corrupted", e);
+            printLine("CRITICAL ERROR: FAILED TO LOAD SECTOR DATA.");
+            return [];
+        }
+    }
+
+    // Initialize System
+    loadSystemData();
 
     // Helper: Print line to output
     function printLine(text, className = '', typing = false) {
