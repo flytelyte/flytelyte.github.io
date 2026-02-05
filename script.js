@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
             translations = await transRes.json();
             allProjects = await projRes.json();
 
+            // Freeze data to prevent mutation
+            allProjects.forEach(p => Object.freeze(p));
+            Object.freeze(allProjects);
+            Object.freeze(translations);
+
             // Determine Language Priority: URL Param > LocalStorage > Default (en)
             const params = new URLSearchParams(window.location.search);
             const urlLang = params.get('lang');
@@ -71,6 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("System Failure: Initialization Failed", e);
             if (output) printLine("CRITICAL ERROR: SYSTEM INITIALIZATION FAILED.");
         }
+    }
+
+    // Helper to safely get localized object
+    function getLocalizedData(item, lang) {
+        if (!item) return null;
+        if (lang === 'ja' && item.ja) {
+            return { ...item, ...item.ja };
+        }
+        return item;
     }
 
     // Inject UI elements dynamically
@@ -165,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderProjectsGrid(lang) {
         const grid = document.getElementById('projects-grid-container');
         grid.innerHTML = allProjects.map(p => {
-            const pData = (lang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
+            const pData = getLocalizedData(p, lang);
             return `
             <article class="project-card">
                 <h3>${pData.title}</h3>
@@ -183,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const t = translations[currentLang];
 
         if (projectBox) {
-            const project = (currentLang === 'ja' && projectBox.ja) ? { ...projectBox, ...projectBox.ja } : projectBox;
+            const project = getLocalizedData(projectBox, currentLang);
 
             document.title = `${project.name} | Antigravity`;
             const titleEl = document.getElementById('p-title');
@@ -235,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         allProjects.forEach(p => {
-            const pData = (currentLang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
+            const pData = getLocalizedData(p, currentLang);
             fileSystem[p.id] = `
     <span class="uppercase">${pData.title}</span>
     -------------------------
