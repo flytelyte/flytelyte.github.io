@@ -34,12 +34,38 @@ document.addEventListener('DOMContentLoaded', () => {
             translations = await transRes.json();
             allProjects = await projRes.json();
 
-            // Set initial language
-            setLanguage(currentLang);
+            // Determine Language Priority: URL Param > LocalStorage > Default (en)
+            const params = new URLSearchParams(window.location.search);
+            const urlLang = params.get('lang');
+            const storedLang = localStorage.getItem('guest_lang');
 
-            // Initial Terminal Message
-            await printLine("ANTIGRABITY TERMINAL V1.0 INITIALIZED.");
-            await printLine("TYPE 'help' FOR COMMANDS.");
+            if (urlLang && ['en', 'ja'].includes(urlLang)) {
+                currentLang = urlLang;
+            } else if (storedLang && ['en', 'ja'].includes(storedLang)) {
+                currentLang = storedLang;
+            } else {
+                currentLang = 'en';
+            }
+
+            // Inject Global UI Elements (like Language Toggle if missing)
+            injectGlobalUI();
+
+            // Initialize Language State
+            setLanguage(currentLang, false); // false = don't reload/pushState yet
+
+            // Determine Page Context
+            const projectId = params.get('id');
+            const isProjectPage = !!document.getElementById('p-title');
+
+            if (isProjectPage && projectId) {
+                renderProjectPage(projectId);
+            } else {
+                // Initial Terminal Message only on Home/Terminal view
+                if (output) {
+                    await printLine("ANTIGRABITY TERMINAL V1.0 INITIALIZED.");
+                    await printLine("TYPE 'help' FOR COMMANDS.");
+                }
+            }
 
         } catch (e) {
             console.error("System Failure: Initialization Failed", e);
@@ -47,50 +73,146 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Inject UI elements dynamically
+    function injectGlobalUI() {
+        // Check if Nav exists
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks && !document.getElementById('lang-toggle')) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.id = 'lang-toggle';
+            toggleBtn.className = 'lang-btn';
+            toggleBtn.innerText = '[EN/JA]';
+            toggleBtn.addEventListener('click', toggleLanguage);
+            navLinks.appendChild(toggleBtn);
+        } else {
+            // Re-attach listener if element exists (e.g. hardcoded in index.html)
+            const existingBtn = document.getElementById('lang-toggle');
+            if (existingBtn) {
+                existingBtn.addEventListener('click', toggleLanguage);
+            }
+        }
+    }
+
+    function toggleLanguage() {
+        const newLang = currentLang === 'en' ? 'ja' : 'en';
+        setLanguage(newLang, true);
+        if (output) printLine(`SYSTEM: LANGUAGE SWITCHED TO [${newLang.toUpperCase()}]`);
+    }
+
     // Language Switching Function
-    function setLanguage(lang) {
+    function setLanguage(lang, updateURL = true) {
         currentLang = lang;
         document.documentElement.lang = lang;
+        localStorage.setItem('guest_lang', lang);
 
         // Update Static Text
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (translations[lang] && translations[lang][key]) {
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = translations[lang][key];
-                } else {
-                    el.innerText = translations[lang][key];
+        if (translations[lang]) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[lang][key];
+                    } else {
+                        el.innerText = translations[lang][key];
+                    }
                 }
-            }
-        });
+            });
+        }
 
         // Update Toggle Button Text
-        if (langToggle) {
-            langToggle.innerText = lang === 'en' ? '[EN/JA]' : '[JP/EN]';
+        const btn = document.getElementById('lang-toggle');
+        if (btn) {
+            btn.innerText = lang === 'en' ? '[EN/JA]' : '[JP/EN]';
         }
 
-        // Re-populate Projects Grid
+        // Re-populate Projects Grid (Index Page)
         const grid = document.getElementById('projects-grid-container');
         if (grid) {
-            grid.innerHTML = allProjects.map(p => {
-                const pData = (lang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
-                return `
-                <article class="project-card">
-                    <h3>${pData.title}</h3>
-                    <p>${pData.subtitle}</p>
-                    <p class="card-brief">${pData.brief.substring(0, 100)}...</p>
-                    <a href="project.html?id=${p.id}&lang=${lang}" class="read-more">${translations[lang]['read_more']}</a>
-                </article>
-                `;
-            }).join('');
+            renderProjectsGrid(lang);
         }
 
-        // Update Terminal File System based on Language
+        // Re-populate Project Details (Project Page)
+        const pTitle = document.getElementById('p-title');
+        if (pTitle) {
+            const params = new URLSearchParams(window.location.search);
+            renderProjectPage(params.get('id'));
+        }
+
+        // Update Terminal File System
         updateFileSystem();
+
+        // Update URL Logic
+        if (updateURL) {
+            const url = new URL(window.location);
+            url.searchParams.set('lang', lang);
+            window.history.replaceState({}, '', url);
+
+            // Update links to preserve language
+            document.querySelectorAll('a').forEach(a => {
+                if (a.href && !a.href.startsWith('#') && !a.href.includes('mailto')) {
+                    try {
+                        const linkUrl = new URL(a.href, window.location.origin);
+                        if (linkUrl.origin === window.location.origin) {
+                            linkUrl.searchParams.set('lang', lang);
+                            a.href = linkUrl.toString();
+                        }
+                    } catch (e) { }
+                }
+            });
+        }
+    }
+
+    function renderProjectsGrid(lang) {
+        const grid = document.getElementById('projects-grid-container');
+        grid.innerHTML = allProjects.map(p => {
+            const pData = (lang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
+            return `
+            <article class="project-card">
+                <h3>${pData.title}</h3>
+                <p>${pData.subtitle}</p>
+                <p class="card-brief">${pData.brief.substring(0, 100)}...</p>
+                <a href="project.html?id=${p.id}&lang=${lang}" class="read-more">${translations[lang]['read_more']}</a>
+            </article>
+            `;
+        }).join('');
+    }
+
+    function renderProjectPage(projectId) {
+        if (!projectId) return;
+        const projectBox = allProjects.find(p => p.id === projectId);
+        const t = translations[currentLang];
+
+        if (projectBox) {
+            const project = (currentLang === 'ja' && projectBox.ja) ? { ...projectBox, ...projectBox.ja } : projectBox;
+
+            document.title = `${project.name} | Antigravity`;
+            const titleEl = document.getElementById('p-title');
+            if (titleEl) titleEl.innerText = `${project.title}: ${project.name}`;
+
+            const subEl = document.getElementById('p-subtitle');
+            if (subEl) subEl.innerText = project.subtitle;
+
+            const briefEl = document.getElementById('p-brief');
+            if (briefEl) briefEl.innerText = project.brief;
+
+            const demoEl = document.getElementById('p-demo');
+            if (demoEl) demoEl.innerText = project.demo_text;
+
+            const specsList = document.getElementById('p-specs');
+            if (specsList) {
+                specsList.innerHTML = project.specs.map(s =>
+                    `<li><strong>${s.label}:</strong> ${s.value}</li>`
+                ).join('');
+            }
+        } else {
+            const titleEl = document.getElementById('p-title');
+            if (titleEl) titleEl.innerText = t ? t.error_not_found : 'ERROR: NOT FOUND';
+        }
     }
 
     function updateFileSystem() {
         const t = translations[currentLang];
+        if (!t) return;
 
         fileSystem = {
             'about': `
@@ -120,15 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ${pData.brief}
     <a href="project.html?id=${p.id}&lang=${currentLang}" style="color:var(--primary-color)">${t.open_gui}</a>
             `;
-        });
-    }
-
-    // Toggle Button Listener
-    if (langToggle) {
-        langToggle.addEventListener('click', () => {
-            const newLang = currentLang === 'en' ? 'ja' : 'en';
-            setLanguage(newLang);
-            printLine(`SYSTEM: LANGUAGE SWITCHED TO [${newLang.toUpperCase()}]`);
         });
     }
 
@@ -248,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 break;
             case 'clear':
-                output.innerHTML = '';
+                if (output) output.innerHTML = '';
                 break;
             case '':
                 break;
