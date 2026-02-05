@@ -19,44 +19,47 @@
     <nav class="main-nav">
         <a href="#" class="logo">ANTIGRABITY_CORE</a>
         <div class="nav-links">
-            <a href="#about">About</a>
-            <a href="#work">Work</a>
-            <a href="#contact">Contact</a>
+            <a href="#about" data-i18n="nav_about">About</a>
+            <a href="#work" data-i18n="nav_work">Work</a>
+            <a href="#contact" data-i18n="nav_contact">Contact</a>
             <a href="#terminal-section">[TERMINAL]</a>
+            <button id="lang-toggle" class="lang-btn">[EN/JA]</button>
         </div>
     </nav>
 
     <main>
         <section id="hero">
             <div class="hero-content">
-                <h1>DIGITAL ARCHITECT</h1>
-                <p class="glitch-text" data-text="BUILDING THE FUTURE BIT BY BIT">BUILDING THE FUTURE BIT BY BIT</p>
-                <p>Specializing in Brutalist Web Design & Systems Engineering.</p>
-                <a href="#work" class="cta-button">VIEW_PROJECTS</a>
+                <h1 data-i18n="hero_title">DIGITAL ARCHITECT</h1>
+                <p class="glitch-text" data-text="BUILDING THE FUTURE BIT BY BIT" data-i18n="hero_glitch">BUILDING THE
+                    FUTURE BIT BY BIT</p>
+                <p data-i18n="hero_sub">Specializing in Brutalist Web Design & Systems Engineering.</p>
+                <a href="#work" class="cta-button" data-i18n="cta_projects">VIEW_PROJECTS</a>
             </div>
         </section>
 
         <section id="about" class="container">
-            <h2>// ABOUT_SYSTEM</h2>
+            <h2 data-i18n="about_heading">// ABOUT_SYSTEM</h2>
             <div class="content-block">
-                <p>Identify: ANTIGRAVITY AGENT</p>
-                <p>Role: Lead Frontend Engineer</p>
-                <p>I am a digital architect obsessed with the raw aesthetic of early computing. I build web experiences
+                <p data-i18n="about_id">Identify: ANTIGRAVITY AGENT</p>
+                <p data-i18n="about_role">Role: Lead Frontend Engineer</p>
+                <p data-i18n="about_desc">I am a digital architect obsessed with the raw aesthetic of early computing. I
+                    build web experiences
                     that are not just viewed, but traversed.</p>
             </div>
         </section>
 
         <section id="work" class="container">
-            <h2>// PROJECT_DATABASE</h2>
+            <h2 data-i18n="work_heading">// PROJECT_DATABASE</h2>
             <div class="projects-grid" id="projects-grid-container">
                 <!-- Projects injected via script.js -->
             </div>
         </section>
 
         <section id="contact" class="container">
-            <h2>// COMM_LINK</h2>
+            <h2 data-i18n="contact_heading">// COMM_LINK</h2>
             <div class="content-block">
-                <p>Secure transmission lines are open.</p>
+                <p data-i18n="contact_msg">Secure transmission lines are open.</p>
                 <p>Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a></p>
                 <p>GitHub: <a href="#" target="_blank">github.com/antigrabity</a></p>
             </div>
@@ -65,7 +68,7 @@
 
     <footer id="terminal-section">
         <div class="terminal-header">
-            <span>TERMINAL_ACCESS // GUEST_MODE</span>
+            <span data-i18n="terminal_header">TERMINAL_ACCESS // GUEST_MODE</span>
         </div>
         <div id="terminal-container">
             <div id="output"></div>

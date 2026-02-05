@@ -15,7 +15,24 @@
                 "value": "React with minimalist brutality"
             }
         ],
-        "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]"
+        "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]",
+        "ja": {
+            "title": "初のプロジェクト",
+            "name": "ポートフォリオのための最初のプロジェクト",
+            "subtitle": "React / WebSockets / 暗号化",
+            "brief": "暗号化された通信のための専用インターフェース。このプロジェクトは、標準的なWeb技術を使用したリアルタイムの安全なメッセージング機能を実証するために構築されました。",
+            "specs": [
+                {
+                    "label": "プロトコル",
+                    "value": "WebSocket (WSS)"
+                },
+                {
+                    "label": "UI/UX",
+                    "value": "React / ミニマリスト・ブルータリズム"
+                }
+            ],
+            "demo_text": "[暗号化信号の可視化]"
+        }
     },
     {
         "id": "project-two",
@@ -37,7 +54,28 @@
                 "value": "60fps at 1M+ points"
             }
         ],
-        "demo_text": "[3D DATA CLOUD VISUALIZATION]"
+        "demo_text": "[3D DATA CLOUD VISUALIZATION]",
+        "ja": {
+            "title": "プロジェクト・ツー",
+            "name": "データ可視化",
+            "subtitle": "D3.js / WebGL / ビッグデータ",
+            "brief": "高精度のデータ可視化ツール。このアプリケーションは、膨大なデータセットを取り込み、分析とパターン認識を容易にするために3D空間でレンダリングします。",
+            "specs": [
+                {
+                    "label": "レンダリング",
+                    "value": "Three.js / WebGL"
+                },
+                {
+                    "label": "データ処理",
+                    "value": "Pythonバックエンドストリーム"
+                },
+                {
+                    "label": "パフォーマンス",
+                    "value": "100万点以上で60fps"
+                }
+            ],
+            "demo_text": "[3Dデータクラウドの可視化]"
+        }
     },
     {
         "id": "project-three",
@@ -59,6 +97,27 @@
                 "value": "ESP32 Controller Interface"
             }
         ],
-        "demo_text": "[DRONE SWARM TELEMETRY GRID]"
+        "demo_text": "[DRONE SWARM TELEMETRY GRID]",
+        "ja": {
+            "title": "プロジェクト・スリー",
+            "name": "ドローンコマンド",
+            "subtitle": "Vue.js / MQTT / IoT",
+            "brief": "自律型ドローンの群れを監視および制御するためのダッシュボード。テレメトリデータ、バッテリーステータス、およびGPS座標をリアルタイムで提供します。",
+            "specs": [
+                {
+                    "label": "通信",
+                    "value": "MQTT over WebSockets"
+                },
+                {
+                    "label": "フレームワーク",
+                    "value": "Vue 3 Composition API"
+                },
+                {
+                    "label": "ハードウェア",
+                    "value": "ESP32 コントローラーインターフェース"
+                }
+            ],
+            "demo_text": "[ドローン群テレメトリグリッド]"
+        }
     }
 ]

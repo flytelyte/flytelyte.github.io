@@ -56,6 +56,34 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const projectId = params.get('id');
+            const lang = params.get('lang') || 'en';
+
+            // Initial static translations
+            try {
+                const transRes = await fetch('data/translations.json');
+                const translations = await transRes.json();
+                const t = translations[lang];
+
+                if (t) {
+                    document.querySelectorAll('[data-i18n]').forEach(el => {
+                        const key = el.getAttribute('data-i18n');
+                        if (t[key]) el.innerText = t[key];
+                    });
+
+                    // Update specific static elements manualy if needed or just rely on data-i18n
+                    // Adding data-i18n hooks to project.html elements
+                    const backLink = document.querySelector('.back-link a');
+                    if (backLink) backLink.innerHTML = t.back_link;
+
+                    const missionHeader = document.querySelector('h2:nth-of-type(1)');
+                    if (missionHeader) missionHeader.innerText = t.project_mission;
+
+                    const specsHeader = document.querySelector('h2:nth-of-type(2)');
+                    if (specsHeader) specsHeader.innerText = t.project_specs;
+                }
+            } catch (e) {
+                console.error("Failed to load translations", e);
+            }
 
             if (!projectId) {
                 document.querySelector('.project-header h1').innerText = 'ERROR: MISSING_ID';
@@ -65,9 +93,11 @@
             try {
                 const response = await fetch('data/projects.json');
                 const projects = await response.json();
-                const project = projects.find(p => p.id === projectId);
+                const projectBox = projects.find(p => p.id === projectId);
 
-                if (project) {
+                if (projectBox) {
+                    const project = (lang === 'ja' && projectBox.ja) ? { ...projectBox, ...projectBox.ja } : projectBox;
+
                     document.title = `${project.name} | Antigravity`;
                     document.getElementById('p-title').innerText = `${project.title}: ${project.name}`;
                     document.getElementById('p-subtitle').innerText = project.subtitle;

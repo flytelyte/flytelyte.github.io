@@ -4,9 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const terminalContainer = document.getElementById('terminal-container');
     const typer = document.getElementById('typer');
     const inputLine = document.getElementById('input-line');
+    const langToggle = document.getElementById('lang-toggle');
 
     let isAdmin = false; // Admin state
     let currentInput = '';
+    let currentLang = 'en'; // Default language
+    let translations = {};
+    let allProjects = [];
 
     // ASCII Art Logo
     const logo = `
@@ -18,70 +22,119 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     // File System / Content
-    let fileSystem = {
-        'about': `
-    <span class="uppercase">Identify:</span> ANTIGRAVITY AGENT
-    <span class="uppercase">Role:</span> Lead Frontend Engineer
-    <span class="uppercase">Specialty:</span> Terminal Brutalism, React, Systems Design
-    
-    I am a digital architect obsessed with the raw aesthetic of early computing. 
-    I build web experiences that are not just viewed, but traversed.
-        `,
-        'contact': `
-    <span class="uppercase">Comms Link:</span>
-    
-    <span class="error">CONTACT INFO REDACTED. AUTHORIZATION REQUIRED.</span>
-        `,
-        'contact_admin': `
-    <span class="uppercase">Comms Link [SECURE]:</span>
-    
-    Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a>
-    GitHub: <a href="#" target="_blank">github.com/antigrabity</a>
-        `
-    };
+    let fileSystem = {};
 
-    // Fetch Projects and Populate System
-    async function loadSystemData() {
+    // Load Translations and Projects
+    async function initSystem() {
         try {
-            const response = await fetch('data/projects.json');
-            const projects = await response.json();
+            const [transRes, projRes] = await Promise.all([
+                fetch('data/translations.json'),
+                fetch('data/projects.json')
+            ]);
+            translations = await transRes.json();
+            allProjects = await projRes.json();
 
-            // Populate File System for Terminal
-            projects.forEach(p => {
-                fileSystem[p.id] = `
-    <span class="uppercase">${p.title}</span>
-    -------------------------
-    ${p.brief}
-    <a href="project.html?id=${p.id}" style="color:var(--primary-color)">[OPEN_GUI]</a>
-                `;
-            });
+            // Set initial language
+            setLanguage(currentLang);
 
-            // Populate Grid if on Index Page
-            const grid = document.getElementById('projects-grid-container');
-            if (grid) {
-                grid.innerHTML = projects.map(p => `
-                <article class="project-card">
-                    <h3>${p.title}</h3>
-                    <p>${p.subtitle}</p>
-                    <p class="card-brief">${p.brief.substring(0, 100)}...</p>
-                    <a href="project.html?id=${p.id}" class="read-more">ACCESS_FILE >></a>
-                </article>
-                `).join('');
-            }
+            // Initial Terminal Message
+            await printLine("ANTIGRABITY TERMINAL V1.0 INITIALIZED.");
+            await printLine("TYPE 'help' FOR COMMANDS.");
 
-            return projects;
         } catch (e) {
-            console.error("System Failure: Data Corrupted", e);
-            printLine("CRITICAL ERROR: FAILED TO LOAD SECTOR DATA.");
-            return [];
+            console.error("System Failure: Initialization Failed", e);
+            if (output) printLine("CRITICAL ERROR: SYSTEM INITIALIZATION FAILED.");
         }
     }
 
-    // Initialize System
-    loadSystemData();
+    // Language Switching Function
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+
+        // Update Static Text
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.placeholder = translations[lang][key];
+                } else {
+                    el.innerText = translations[lang][key];
+                }
+            }
+        });
+
+        // Update Toggle Button Text
+        if (langToggle) {
+            langToggle.innerText = lang === 'en' ? '[EN/JA]' : '[JP/EN]';
+        }
+
+        // Re-populate Projects Grid
+        const grid = document.getElementById('projects-grid-container');
+        if (grid) {
+            grid.innerHTML = allProjects.map(p => {
+                const pData = (lang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
+                return `
+                <article class="project-card">
+                    <h3>${pData.title}</h3>
+                    <p>${pData.subtitle}</p>
+                    <p class="card-brief">${pData.brief.substring(0, 100)}...</p>
+                    <a href="project.html?id=${p.id}&lang=${lang}" class="read-more">${translations[lang]['read_more']}</a>
+                </article>
+                `;
+            }).join('');
+        }
+
+        // Update Terminal File System based on Language
+        updateFileSystem();
+    }
+
+    function updateFileSystem() {
+        const t = translations[currentLang];
+
+        fileSystem = {
+            'about': `
+    <span class="uppercase">${t.about_id}</span>
+    <span class="uppercase">${t.about_role}</span>
+    
+    ${t.about_desc}
+            `,
+            'contact': `
+    <span class="uppercase">${t.contact_heading}:</span>
+    
+    <span class="error">CONTACT INFO REDACTED. AUTHORIZATION REQUIRED.</span>
+            `,
+            'contact_admin': `
+    <span class="uppercase">${t.contact_heading} [SECURE]:</span>
+    
+    Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a>
+    GitHub: <a href="#" target="_blank">github.com/antigrabity</a>
+            `
+        };
+
+        allProjects.forEach(p => {
+            const pData = (currentLang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
+            fileSystem[p.id] = `
+    <span class="uppercase">${pData.title}</span>
+    -------------------------
+    ${pData.brief}
+    <a href="project.html?id=${p.id}&lang=${currentLang}" style="color:var(--primary-color)">${t.open_gui}</a>
+            `;
+        });
+    }
+
+    // Toggle Button Listener
+    if (langToggle) {
+        langToggle.addEventListener('click', () => {
+            const newLang = currentLang === 'en' ? 'ja' : 'en';
+            setLanguage(newLang);
+            printLine(`SYSTEM: LANGUAGE SWITCHED TO [${newLang.toUpperCase()}]`);
+        });
+    }
 
     // Helper: Print line to output
     function printLine(text, className = '', typing = false) {
+        if (!output) return Promise.resolve();
         return new Promise((resolve) => {
             const line = document.createElement('div');
             if (className) line.className = className;
@@ -117,7 +170,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         switch (cmd) {
             case 'help':
-                await printLine(`
+                // Localized Help
+                if (currentLang === 'ja') {
+                    await printLine(`
+    利用可能なコマンド:
+    -------------------
+    about       - ユーザーIDを表示
+    projects    - プロジェクト一覧 (メイン表示と同期)
+    contact     - 通信を確立
+    clear       - 画面をクリア
+    admin       - ルートアクセスを要求
+    exit        - ログアウト/管理者モード終了
+    view [id]   - 特定のアイテム情報を表示
+                    `);
+                } else {
+                    await printLine(`
     AVAILABLE COMMANDS:
     -------------------
     about       - View user identity
@@ -127,15 +194,17 @@ document.addEventListener('DOMContentLoaded', () => {
     admin       - Request Root Access
     exit        - Logout/Exit Admin Mode
     view [id]   - View specific item info
-                `);
+                    `);
+                }
                 break;
             case 'ls':
             case 'projects':
-                await printLine("PROJECTS LOCATED IN MAIN MEMORY:");
-                await printLine("- PROJECT_ONE");
-                await printLine("- PROJECT_TWO");
-                await printLine("- PROJECT_THREE");
-                await printLine("USE 'view [project-id]' FOR DETAILS OR SCROLL UP.");
+                await printLine(currentLang === 'ja' ? "メインメモリ内のプロジェクト:" : "PROJECTS LOCATED IN MAIN MEMORY:");
+                allProjects.forEach(p => {
+                    const pData = (currentLang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
+                    printLine(`- ${pData.title} (${p.id})`);
+                });
+                await printLine(currentLang === 'ja' ? "'view [project-id]' で詳細を表示。" : "USE 'view [project-id]' FOR DETAILS.");
                 break;
             case 'about':
             case 'whoami':
@@ -190,22 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Input Handling
     function updateTyper() {
-        typer.text = currentInput;
-        typer.textContent = currentInput;
+        if (typer) {
+            typer.textContent = currentInput;
+        }
     }
 
-    // Initial Message
-    (async () => {
-        await printLine("ANTIGRABITY TERMINAL V1.0 INITIALIZED.");
-        await printLine("TYPE 'help' FOR COMMANDS.");
-    })();
+    // Initialize System
+    initSystem();
 
-    // Global Key Listener (only if terminal is visible/focused? No, keeping it global for "hacky" feel but respecting scroll)
-    // Actually, let's bind it only when typing doesn't interfere? 
-    // For now, let's keep it global but maybe add a listener to the input area or just document.
+    // Global Key Listener
     document.addEventListener('keydown', (e) => {
         // Prevent typing if ctrl/meta keys are pressed
         if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+        // If typing in input fields, ignore (though we don't have many inputs other than the terminal)
 
         if (e.key === 'Enter') {
             handleCommand(currentInput);
@@ -218,9 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.key.length === 1) {
             currentInput += e.key;
             updateTyper();
-
-            // Auto-scroll to terminal if typing starts? Maybe annoying.
-            // Let's only scroll if checks
         }
     });
 });
