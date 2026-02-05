@@ -39,24 +39,39 @@ document.addEventListener('DOMContentLoaded', () => {
             // Object.freeze(allProjects);
             Object.freeze(translations);
 
-            // Determine Language Priority: URL Param > LocalStorage > Default (en)
+            // Determine Language based on Filename (Static Authority)
+            const path = window.location.pathname;
+            const isJaPage = path.includes('_ja.html') || path.endsWith('/ja'); // Basic detection
+            const isGenericPage = path.includes('editor.html') || path.includes('admin.html');
+
             const params = new URLSearchParams(window.location.search);
             const urlLang = params.get('lang');
             const storedLang = localStorage.getItem('guest_lang');
 
-            if (urlLang && ['en', 'ja'].includes(urlLang)) {
-                currentLang = urlLang;
-            } else if (storedLang && ['en', 'ja'].includes(storedLang)) {
-                currentLang = storedLang;
+            if (isGenericPage) {
+                // For Editor/Admin, checks params > storage > default
+                if (urlLang && ['en', 'ja'].includes(urlLang)) {
+                    currentLang = urlLang;
+                } else if (storedLang && ['en', 'ja'].includes(storedLang)) {
+                    currentLang = storedLang;
+                } else {
+                    currentLang = 'en';
+                }
             } else {
-                currentLang = 'en';
+                // For Static Pages (index.html, project.html), ENFORCE the language
+                if (isJaPage) {
+                    currentLang = 'ja';
+                } else {
+                    currentLang = 'en';
+                }
             }
 
-            // Inject Global UI Elements (like Language Toggle if missing)
-            // injectGlobalUI(); // REMOVED: Static pages handle this.
+            // Sync LocalStorage with the Determined Language
+            localStorage.setItem('guest_lang', currentLang);
 
             // Initialize Language State
-            setLanguage(currentLang, false); // false = don't reload/pushState yet
+            // setLanguage() will use this enforced currentLang to render dynamic content matches the file
+            setLanguage(currentLang, false);
 
             // Determine Page Context
             const projectId = params.get('id');

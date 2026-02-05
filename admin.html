@@ -7,7 +7,9 @@
     <title>ADMIN_PANEL | Antigravity</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800https://fonts.googleapis.com/css2?family=VT323&display=swapdisplay=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .admin-layout {
@@ -57,12 +59,23 @@
         input,
         textarea {
             width: 100%;
-            background: rgba(0, 20, 0, 0.8);
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            font-family: 'VT323', monospace;
-            font-size: 1.2rem;
-            padding: 0.5rem;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            color: #111;
+            /* Enforce dark text */
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        input:read-only,
+        textarea:read-only {
+            background-color: #F8F9FA;
+            /* Light Grey for Readonly */
+            color: #444;
+            /* Slightly lighter text for contrast hierarchy */
+            border-color: #E2E8F0;
         }
 
         textarea {
@@ -137,7 +150,7 @@
 </head>
 
 <body>
-    <div class="scanline"></div>
+    <!-- Scanline removed -->
     <nav class="main-nav">
         <a href="index.html" class="logo">ANTIGRABITY_CORE // ADMIN</a>
         <div class="nav-links">

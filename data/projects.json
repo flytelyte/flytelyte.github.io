@@ -1,7 +1,7 @@
 [
     {
         "id": "project-one",
-        "last_updated": "2026-02-05T14:55:54.988Z",
+        "last_updated": "2026-02-05T16:28:25.504Z",
         "title": "First Project trial",
         "name": "First Project for the portfolio",
         "subtitle": "React / WebSockets / Encryption",
@@ -38,7 +38,7 @@
     },
     {
         "id": "project-two",
-        "last_updated": "2026-02-05T14:44:11.876Z",
+        "last_updated": "2026-02-05T16:33:38.637Z",
         "title": "PROJECT_TWO trial",
         "name": "Data Vis",
         "subtitle": "D3.js / WebGL / Big Data",
@@ -59,7 +59,7 @@
         ],
         "demo_text": "[3D DATA CLOUD VISUALIZATION]",
         "ja": {
-            "last_updated": "2026-02-05T14:44:09.013Z",
+            "last_updated": "2026-02-05T16:33:35.286Z",
             "title": "プロジェクト・ツー",
             "name": "データ可視化",
             "subtitle": "D3.js / WebGL / ビッグデータ",
