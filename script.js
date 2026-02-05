@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
             translations = await transRes.json();
             allProjects = await projRes.json();
 
-            // Freeze data to prevent mutation
-            allProjects.forEach(p => Object.freeze(p));
-            Object.freeze(allProjects);
+            // Freeze data REMOVED to allow editing
+            // allProjects.forEach(p => Object.freeze(p));
+            // Object.freeze(allProjects);
             Object.freeze(translations);
 
             // Determine Language Priority: URL Param > LocalStorage > Default (en)
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Inject Global UI Elements (like Language Toggle if missing)
-            injectGlobalUI();
+            // injectGlobalUI(); // REMOVED: Static pages handle this.
 
             // Initialize Language State
             setLanguage(currentLang, false); // false = don't reload/pushState yet
@@ -61,8 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Determine Page Context
             const projectId = params.get('id');
             const isProjectPage = !!document.getElementById('p-title');
+            const isEditorPage = !!document.getElementById('editor-form');
 
-            if (isProjectPage && projectId) {
+            if (isEditorPage) {
+                initEditor();
+            } else if (isProjectPage && projectId) {
                 renderProjectPage(projectId);
             } else {
                 // Initial Terminal Message only on Home/Terminal view
@@ -78,6 +81,183 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Initialize Editor
+    function initEditor() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const lang = params.get('lang') || 'en';
+
+        // Set Context
+        const contextEl = document.getElementById('edit-context');
+        if (contextEl) contextEl.innerText = `${id} [${lang.toUpperCase()}]`;
+
+        const projectBox = allProjects.find(p => p.id === id);
+        if (!projectBox) {
+            alert("Project not found!");
+            return;
+        }
+
+        // Get Data to Edit
+        let dataToEdit = projectBox;
+        if (lang === 'ja') {
+            if (!projectBox.ja) projectBox.ja = {};
+            dataToEdit = projectBox.ja;
+        }
+
+        // Localize UI if Japanese
+        if (lang === 'ja') {
+            const labels = {
+                'lbl-title': 'プロジェクトID (TITLE)',
+                'lbl-name': '表示名 (NAME)',
+                'lbl-subtitle': 'サブタイトル (SUBTITLE)',
+                'lbl-brief': '概要 (DESCRIPTION)',
+                'lbl-demo': 'デモテキスト (DEMO TEXT)',
+                'btn-save': '変更を保存',
+                'btn-view-page': 'ページを表示',
+                'copy-json': 'JSONをコピー'
+            };
+            for (const [id, text] of Object.entries(labels)) {
+                const el = document.getElementById(id);
+                if (el) el.innerText = text;
+            }
+        }
+
+        // Populate Form
+        document.getElementById('title').value = dataToEdit.title || '';
+        document.getElementById('name').value = dataToEdit.name || '';
+        document.getElementById('subtitle').value = dataToEdit.subtitle || '';
+        document.getElementById('brief').value = dataToEdit.brief || '';
+        document.getElementById('demo_text').value = dataToEdit.demo_text || '';
+
+        // Setup Buttons
+        const btnSwitch = document.getElementById('btn-switch-lang');
+        const otherLang = lang === 'en' ? 'ja' : 'en';
+        if (btnSwitch) {
+            btnSwitch.innerText = lang === 'en' ? "EDIT JAPANESE VERSION" : "英語版を編集"; // Localized
+            btnSwitch.onclick = () => {
+                window.location.href = `editor.html?id=${id}&lang=${otherLang}`;
+            };
+        }
+
+        const btnView = document.getElementById('btn-view-page');
+        if (btnView) {
+            const targetPage = lang === 'ja' ? 'project_ja.html' : 'project.html';
+            btnView.onclick = () => {
+                window.location.href = `${targetPage}?id=${id}`;
+            };
+        }
+
+        // Handle Save
+        const form = document.getElementById('editor-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveProjectData(id, lang, projectBox);
+        });
+
+        // Handle JSON Copy
+        document.getElementById('copy-json').addEventListener('click', () => {
+            navigator.clipboard.writeText(JSON.stringify(allProjects, null, 4));
+            alert("Full Projects JSON copied to clipboard.");
+        });
+    }
+
+    async function saveProjectData(id, lang, rootProject) {
+        const now = new Date().toISOString();
+        const statusEl = document.getElementById('save-status');
+
+        // Update Timestamp (Only for the version being edited)
+        if (lang === 'en') {
+            rootProject.last_updated = now;
+        } else {
+            if (rootProject.ja) rootProject.ja.last_updated = now;
+        }
+
+        const titleVal = document.getElementById('title').value;
+        const nameVal = document.getElementById('name').value;
+        const subtitleVal = document.getElementById('subtitle').value;
+        const briefVal = document.getElementById('brief').value;
+        const demoVal = document.getElementById('demo_text').value;
+
+        const newData = {
+            title: titleVal,
+            name: nameVal,
+            subtitle: subtitleVal,
+            brief: briefVal,
+            demo_text: demoVal,
+            last_updated: now
+        };
+
+        // Apply Update in Memory
+        if (lang === 'en') {
+            Object.assign(rootProject, newData);
+        } else {
+            if (!rootProject.ja) rootProject.ja = {};
+            Object.assign(rootProject.ja, newData);
+        }
+
+        // Save to Server
+        if (statusEl) statusEl.innerText = "SAVING...";
+
+        try {
+            const res = await fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(allProjects)
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                if (statusEl) statusEl.innerText = "SAVED";
+
+                // Show Success Modal
+                const modal = document.getElementById('success-modal');
+                if (modal) {
+                    const params = new URLSearchParams(window.location.search);
+                    const currentId = params.get('id');
+                    const currentLang = params.get('lang') || 'en';
+                    const otherLang = currentLang === 'en' ? 'ja' : 'en';
+
+                    // Localize Strings First
+                    let msgText = "THE CHANGES SUCCEEDED";
+                    let adminText = "OK, RETURN TO ADMIN PAGE";
+                    let otherText = "EDIT OTHER VERSION";
+
+                    if (currentLang === 'ja') {
+                        msgText = "保存完了";
+                        adminText = "管理画面に戻る (RETURN TO ADMIN)";
+                        otherText = "他のバージョンを編集 (EDIT OTHER)";
+                    }
+
+                    // Apply to DOM (Unified Path)
+                    const msgEl = document.getElementById('modal-msg');
+                    const btnAdmin = document.getElementById('btn-modal-admin');
+                    const btnOther = document.getElementById('btn-modal-other');
+
+                    if (msgEl) msgEl.innerText = msgText;
+                    if (btnAdmin) btnAdmin.innerText = adminText;
+                    if (btnOther) btnOther.innerText = otherText;
+
+                    // Setup Actions (Direct assignment overwrites previous listeners safely)
+                    if (btnAdmin) {
+                        btnAdmin.onclick = () => window.location.href = 'admin.html';
+                    }
+                    if (btnOther) {
+                        btnOther.onclick = () => window.location.href = `editor.html?id=${currentId}&lang=${otherLang}`;
+                    }
+
+                    modal.style.display = 'flex';
+                }
+            } else {
+                if (statusEl) statusEl.innerText = "ERROR: SAVE FAILED";
+                alert("Save Failed: " + data.message);
+            }
+        } catch (e) {
+            console.error("Save Error:", e);
+            if (statusEl) statusEl.innerText = "CRITICAL ERROR";
+            alert("Critical Error during save.");
+        }
+    }
+
     // Helper to safely get localized object
     function getLocalizedData(item, lang) {
         if (!item) return null;
@@ -87,31 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return item;
     }
 
-    // Inject UI elements dynamically
-    function injectGlobalUI() {
-        // Check if Nav exists
-        const navLinks = document.querySelector('.nav-links');
-        if (navLinks && !document.getElementById('lang-toggle')) {
-            const toggleBtn = document.createElement('button');
-            toggleBtn.id = 'lang-toggle';
-            toggleBtn.className = 'lang-btn';
-            toggleBtn.innerText = '[EN/JA]';
-            toggleBtn.addEventListener('click', toggleLanguage);
-            navLinks.appendChild(toggleBtn);
-        } else {
-            // Re-attach listener if element exists (e.g. hardcoded in index.html)
-            const existingBtn = document.getElementById('lang-toggle');
-            if (existingBtn) {
-                existingBtn.addEventListener('click', toggleLanguage);
-            }
-        }
-    }
+    // Inject UI elements dynamically - REMOVED FUNCTIONALITY
+    // function injectGlobalUI() {} 
 
-    function toggleLanguage() {
-        const newLang = currentLang === 'en' ? 'ja' : 'en';
-        setLanguage(newLang, true);
-        if (output) printLine(`SYSTEM: LANGUAGE SWITCHED TO [${newLang.toUpperCase()}]`);
-    }
+    // function toggleLanguage() {}
 
     // Language Switching Function
     function setLanguage(lang, updateURL = true) {

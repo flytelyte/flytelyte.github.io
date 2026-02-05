@@ -314,12 +314,66 @@ h2 {
 }
 
 .lang-btn:hover {
-    border-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
     color: var(--primary-color);
     box-shadow: 0 0 10px var(--primary-color);
 }
 
-/* Warnings & Controls */
+/* Editor Specific */
+#btn-save {
+    background-color: blue;
+    /* User requested Blue */
+    color: white;
+    border: 1px solid blue;
+}
+
+#btn-save:hover {
+    background-color: darkblue;
+    border-color: darkblue;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: black;
+    border: 2px solid var(--primary-color);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-actions button {
+    width: 100%;
+}
+
+/* Warnings */
 .warning-banner {
     background-color: rgba(255, 100, 0, 0.2);
     border: 1px solid #ff6400;

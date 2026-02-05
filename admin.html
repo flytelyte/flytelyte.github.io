@@ -154,12 +154,29 @@
             <section class="editor-panel">
                 <form id="edit-form">
                     <div class="editor-header">
-                        <span class="editor-title">EDIT_RECORD //</span>
-                        <button type="submit" class="btn btn-save">SAVE_CHANGES</button>
+                        <span class="editor-title">VIEW_RECORD //</span>
+                        <div class="admin-actions">
+                            <button type="button" class="btn btn-outline" id="btn-admin-edit-en">EDIT PAGE (EN)</button>
+                            <button type="button" class="btn btn-outline" id="btn-admin-edit-ja">EDIT PAGE (JA)</button>
+                        </div>
                     </div>
 
                     <div id="status" class="status-msg"
                         style="margin-top: -1rem; margin-bottom: 1rem; text-align: right;"></div>
+
+                    <div class="form-group"
+                        style="border-bottom: 1px solid var(--primary-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <label>DATA VIEW MODE:</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                                <input type="radio" name="view-lang" value="en" checked onchange="refreshView()">
+                                ENGLISH DATA
+                            </label>
+                            <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                                <input type="radio" name="view-lang" value="ja" onchange="refreshView()"> JAPANESE DATA
+                            </label>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label>ID (Read Only)</label>
@@ -167,30 +184,30 @@
                     </div>
                     <div class="form-group">
                         <label>Project Title (e.g. PROJECT_ONE)</label>
-                        <input type="text" id="p-title" required>
+                        <input type="text" id="p-title" readonly>
                     </div>
                     <div class="form-group">
                         <label>Display Name (e.g. Secure Uplink)</label>
-                        <input type="text" id="p-name" required>
+                        <input type="text" id="p-name" readonly>
                     </div>
                     <div class="form-group">
                         <label>Subtitle / Tech Stack</label>
-                        <input type="text" id="p-subtitle">
+                        <input type="text" id="p-subtitle" readonly>
                     </div>
                     <div class="form-group">
                         <label>Brief Description</label>
-                        <textarea id="p-brief"></textarea>
+                        <textarea id="p-brief" readonly></textarea>
                     </div>
 
                     <div class="form-group">
                         <label>Technical Specs</label>
                         <div id="specs-container"></div>
-                        <button type="button" class="btn btn-outline" onclick="addSpecRow()">+ Add Spec</button>
+                        <!-- Add Spec Button REMOVED for Read-Only View -->
                     </div>
 
                     <div class="form-group">
                         <label>Demo Placeholder Text</label>
-                        <input type="text" id="p-demo">
+                        <input type="text" id="p-demo" readonly>
                     </div>
                 </form>
             </section>
@@ -223,19 +240,40 @@
             `).join('');
         }
 
+        function refreshView() {
+            if (currentProjectIndex !== -1) {
+                selectProject(currentProjectIndex);
+            }
+        }
+
         function selectProject(index) {
             currentProjectIndex = index;
             const p = projects[index];
             renderList();
 
-            document.getElementById('p-id').value = p.id;
-            document.getElementById('p-title').value = p.title;
-            document.getElementById('p-name').value = p.name;
-            document.getElementById('p-subtitle').value = p.subtitle;
-            document.getElementById('p-brief').value = p.brief;
-            document.getElementById('p-demo').value = p.demo_text || '';
+            // Determine which data layer to show
+            const lang = document.querySelector('input[name="view-lang"]:checked').value;
+            const data = (lang === 'ja' && p.ja) ? { ...p, ...p.ja } : p;
 
-            renderSpecs(p.specs || []);
+            document.getElementById('p-id').value = p.id;
+            document.getElementById('p-title').value = data.title || '';
+            document.getElementById('p-name').value = data.name || '';
+            document.getElementById('p-subtitle').value = data.subtitle || '';
+            document.getElementById('p-brief').value = data.brief || '';
+            document.getElementById('p-demo').value = data.demo_text || '';
+
+            renderSpecs(data.specs || []);
+
+            // Update Edit Page Buttons (Links stay static to their specific lang)
+            const btnEn = document.getElementById('btn-admin-edit-en');
+            const btnJa = document.getElementById('btn-admin-edit-ja');
+
+            btnEn.onclick = () => window.location.href = `editor.html?id=${p.id}&lang=en`;
+            btnJa.onclick = () => window.location.href = `editor.html?id=${p.id}&lang=ja`;
+
+            // Highlight active edit button based on view? Optional.
+            btnEn.style.background = (lang === 'en') ? 'rgba(0,255,65,0.2)' : 'transparent';
+            btnJa.style.background = (lang === 'ja') ? 'rgba(0,255,65,0.2)' : 'transparent';
         }
 
         function renderSpecs(specs) {
@@ -245,9 +283,8 @@
                 const row = document.createElement('div');
                 row.className = 'spec-row';
                 row.innerHTML = `
-                    <input type="text" placeholder="Label" value="${spec.label}" onchange="updateSpec(${idx}, 'label', this.value)">
-                    <input type="text" placeholder="Value" value="${spec.value}" onchange="updateSpec(${idx}, 'value', this.value)">
-                    <button type="button" class="btn-outline" onclick="removeSpec(${idx})">X</button>
+                    <input type="text" value="${spec.label}" readonly>
+                    <input type="text" value="${spec.value}" readonly>
                 `;
                 container.appendChild(row);
             });

@@ -1,8 +1,8 @@
 [
     {
         "id": "project-one",
-        "last_updated": "2026-02-05T12:00:00Z",
-        "title": "First Project",
+        "last_updated": "2026-02-05T14:55:54.988Z",
+        "title": "First Project trial",
         "name": "First Project for the portfolio",
         "subtitle": "React / WebSockets / Encryption",
         "brief": "A specialized interface for encrypted communication. This project was built to demonstrate real-time secure messaging capabilities using standard web technologies.",
@@ -18,8 +18,8 @@
         ],
         "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]",
         "ja": {
-            "last_updated": "2026-02-05T12:00:00Z",
-            "title": "初のプロジェクト",
+            "last_updated": "2026-02-05T14:56:04.772Z",
+            "title": "初のプロジェクト ",
             "name": "ポートフォリオのための最初のプロジェクト",
             "subtitle": "React / WebSockets / 暗号化",
             "brief": "暗号化された通信のための専用インターフェース。このプロジェクトは、標準的なWeb技術を使用したリアルタイムの安全なメッセージング機能を実証するために構築されました。",
@@ -38,8 +38,8 @@
     },
     {
         "id": "project-two",
-        "last_updated": "2026-02-05T12:00:00Z",
-        "title": "PROJECT_TWO",
+        "last_updated": "2026-02-05T14:44:11.876Z",
+        "title": "PROJECT_TWO trial",
         "name": "Data Vis",
         "subtitle": "D3.js / WebGL / Big Data",
         "brief": "High-fidelity data visualization tool. This application ingests massive datasets and renders them in a 3D space for easier analysis and pattern recognition.",
@@ -59,7 +59,7 @@
         ],
         "demo_text": "[3D DATA CLOUD VISUALIZATION]",
         "ja": {
-            "last_updated": "2026-02-05T12:00:00Z",
+            "last_updated": "2026-02-05T14:44:09.013Z",
             "title": "プロジェクト・ツー",
             "name": "データ可視化",
             "subtitle": "D3.js / WebGL / ビッグデータ",
