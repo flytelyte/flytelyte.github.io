@@ -300,22 +300,67 @@ h2 {
     }
 }
 
-/* Language Button */
+/* Language Toggle */
 .lang-btn {
     background: transparent;
-    color: var(--primary-color);
-    border: 1px solid var(--text-color);
-    padding: 0.2rem 0.5rem;
-    font-family: 'VT323', monospace;
-    font-size: 1.2rem;
+    border: 1px solid var(--dim-color);
+    color: var(--dim-color);
+    padding: 5px 10px;
     cursor: pointer;
-    margin-left: 1rem;
-    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 .lang-btn:hover {
-    background: var(--text-color);
-    color: var(--bg-color);
-    box-shadow: 0 0 10px var(--text-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+/* Warnings & Controls */
+.warning-banner {
+    background-color: rgba(255, 100, 0, 0.2);
+    border: 1px solid #ff6400;
+    color: #ffb07c;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 800px;
+    text-align: center;
+    animation: flashWarning 4s infinite;
+}
+
+@keyframes flashWarning {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.project-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: uppercase;
+}
+
+.action-btn:hover {
+    background: var(--primary-color);
+    color: #000;
 }

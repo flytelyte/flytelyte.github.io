@@ -1,6 +1,7 @@
 [
     {
         "id": "project-one",
+        "last_updated": "2026-02-05T12:00:00Z",
         "title": "First Project",
         "name": "First Project for the portfolio",
         "subtitle": "React / WebSockets / Encryption",
@@ -17,6 +18,7 @@
         ],
         "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]",
         "ja": {
+            "last_updated": "2026-02-05T12:00:00Z",
             "title": "初のプロジェクト",
             "name": "ポートフォリオのための最初のプロジェクト",
             "subtitle": "React / WebSockets / 暗号化",
@@ -36,6 +38,7 @@
     },
     {
         "id": "project-two",
+        "last_updated": "2026-02-05T12:00:00Z",
         "title": "PROJECT_TWO",
         "name": "Data Vis",
         "subtitle": "D3.js / WebGL / Big Data",
@@ -56,6 +59,7 @@
         ],
         "demo_text": "[3D DATA CLOUD VISUALIZATION]",
         "ja": {
+            "last_updated": "2026-02-05T12:00:00Z",
             "title": "プロジェクト・ツー",
             "name": "データ可視化",
             "subtitle": "D3.js / WebGL / ビッグデータ",
@@ -79,6 +83,7 @@
     },
     {
         "id": "project-three",
+        "last_updated": "2026-02-05T12:00:00Z",
         "title": "PROJECT_THREE",
         "name": "Drone Command",
         "subtitle": "Vue.js / MQTT / IoT",
@@ -99,6 +104,7 @@
         ],
         "demo_text": "[DRONE SWARM TELEMETRY GRID]",
         "ja": {
+            "last_updated": "2026-02-05T12:00:00Z",
             "title": "プロジェクト・スリー",
             "name": "ドローンコマンド",
             "subtitle": "Vue.js / MQTT / IoT",

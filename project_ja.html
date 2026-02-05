@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity | プロジェクト詳細</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="scanline"></div>
+    <nav class="navbar">
+        <div class="logo">ANTIGRAVITY</div>
+        <div class="nav-links">
+            <a href="index_ja.html#work" class="back-link">&lt; // 基地へ戻る</a>
+            <a>[PROJECT_DETAILS]</a>
+        </div>
+    </nav>
+
+    <main class="project-view">
+        <div id="staleness-warning"></div>
+        <div class="project-header">
+            <h1 class="glitch" id="p-title" data-text="LOADING...">LOADING...</h1>
+            <p class="subtitle" id="p-subtitle">...</p>
+        </div>
+
+        <div class="project-content">
+            <div class="project-controls">
+                <button id="btn-edit-this" class="action-btn">このページを編集</button>
+                <button id="btn-edit-other" class="action-btn">英語版を編集</button>
+            </div>
+
+            <section class="mission-brief">
+                <h2>>> MISSION_BRIEF</h2>
+                <div class="terminal-box" id="p-brief">
+                    <!-- Injected by JS -->
+                </div>
+            </section>
+
+            <section class="tech-specs">
+                <h2>>> TECHNICAL_SPECS</h2>
+                <ul class="specs-list" id="p-specs">
+                    <!-- Injected by JS -->
+                </ul>
+            </section>
+
+            <section class="visuals">
+                <div class="demo-window" id="p-demo">
+                    <!-- Injected by JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity | Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .editor-container {
+            max-width: 800px;
+            margin: 40px auto;
+            border: 2px solid var(--primary-color);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--dim-color);
+            color: #eee;
+            padding: 10px;
+            font-family: inherit;
+        }
+
+        textarea {
+            height: 150px;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--dim-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanline"></div>
+    <nav class="navbar">
+        <div class="logo">ANTIGRAVITY // CMS</div>
+        <div class="nav-links">
+            <a href="index.html">EXIT_EDITOR</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="editor-container">
+            <div class="editor-header">
+                <h2>EDITING: <span id="edit-context">...</span></h2>
+                <div class="status" id="save-status">READY</div>
+            </div>
+
+            <form id="editor-form">
+                <div class="form-group">
+                    <label>TITLE</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label>NAME</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label>SUBTITLE</label>
+                    <input type="text" id="subtitle">
+                </div>
+                <div class="form-group">
+                    <label>BRIEF (DESCRIPTION)</label>
+                    <textarea id="brief" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>DEMO TEXT</label>
+                    <input type="text" id="demo_text">
+                </div>
+
+                <div class="editor-actions">
+                    <button type="submit" class="action-btn">SAVE CHANGES</button>
+                    <button type="button" id="copy-json" class="action-btn" style="border-color: #555;">COPY
+                        JSON</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

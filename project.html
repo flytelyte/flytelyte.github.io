@@ -14,11 +14,11 @@
 <body class="project-page">
     <div class="scanline"></div>
 
-    <nav class="main-nav">
-        <a href="index.html" class="logo">ANTIGRABITY_CORE</a>
+    <nav class="navbar">
+        <div class="logo">ANTIGRAVITY</div>
         <div class="nav-links">
-            <a href="index.html#work">Work</a>
-            <a href="index.html#terminal-section">Terminal</a>
+            <a href="index.html#work" class="back-link">&lt; // RETURN_TO_BASE</a>
+            <a>[PROJECT_DETAILS]</a>
         </div>
     </nav>
 
@@ -28,26 +28,33 @@
             <p class="subtitle" id="p-subtitle"></p>
         </header>
 
-        <section class="project-content">
-            <div class="project-info">
-                <h2>// MISSION_BRIEF</h2>
-                <p id="p-brief"></p>
+        <div class="project-content">
+            <div class="project-controls">
+                <button id="btn-edit-this" class="action-btn">Edit This Page</button>
+                <button id="btn-edit-other" class="action-btn">Edit Japanese Version</button>
+            </div>
 
-                <h2>// TECHNICAL_SPECS</h2>
+            <section class="mission-brief">
+                <h2>>> MISSION_BRIEF</h2>
+                <p id="p-brief"></p>
+            </section>
+
+            <section class="tech-specs">
+                <h2>>> TECHNICAL_SPECS</h2>
                 <ul id="p-specs">
                 </ul>
-            </div>
+            </section>
 
             <div class="project-demo">
                 <div class="demo-placeholder" id="p-demo">
                 </div>
             </div>
-        </section>
+            </section>
 
-        <div class="back-link">
-            <a href="index.html">
-                << RETURN_TO_BASE</a>
-        </div>
+            <div class="back-link">
+                <a href="index.html">
+                    << RETURN_TO_BASE</a>
+            </div>
     </main>
 
     <script src="script.js"></script>
