@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Initial Terminal Message only on Home/Terminal view
                 if (output) {
-                    await printLine("ANTIGRABITY TERMINAL V1.0 INITIALIZED.");
+                    await printLine("SOLO DEV TERMINAL V1.0 INITIALIZED.");
                     await printLine("TYPE 'help' FOR COMMANDS.");
                 }
             }
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (projectBox) {
             const project = getLocalizedData(projectBox, currentLang);
 
-            document.title = `${project.name} | Antigravity`;
+            document.title = `${project.name} | Solo Developer Yuki`;
             const titleEl = document.getElementById('p-title');
             if (titleEl) titleEl.innerText = `${project.title}: ${project.name}`;
 
@@ -477,8 +477,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'contact_admin': `
     <span class="uppercase">${t.contact_heading} [SECURE]:</span>
     
-    Email: <a href="mailto:guest@antigrabity.io">guest@antigrabity.io</a>
-    GitHub: <a href="#" target="_blank">github.com/antigrabity</a>
+    Email: <a href="mailto:guest@solodev.io">guest@solodev.io</a>
+    GitHub: <a href="#" target="_blank">github.com/solodev</a>
             `
         };
 
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1).join(' ');
 
-        await printLine(`<span class="prompt">${isAdmin ? 'admin' : 'guest'}@antigrabity:~$</span> ${cmdRaw}`);
+        await printLine(`<span class="prompt">${isAdmin ? 'admin' : 'guest'}@solodev:~$</span> ${cmdRaw}`);
 
         switch (cmd) {
             case 'help':

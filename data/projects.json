@@ -1,30 +1,31 @@
 [
     {
         "id": "project-one",
-        "last_updated": "2026-02-06T12:10:34.194Z",
+        "last_updated": "2026-02-06T22:16:12.602Z",
         "title": "First Project trial",
-        "name": "First Project for the portfolio",
-        "subtitle": "React / WebSockets / Encryption",
-        "brief": "A specialized interface for encrypted communication. This project was built to demonstrate real-time secure messaging capabilities using standard web technologies.",
+        "name": "R&D: Numerical Optimization Engine for Logistics Networks",
+        "subtitle": "Numerical Calculation, Python, Dynamic Programming.",
+        "brief": "Utilizing mathematical programming to solve large-scale routing problems, achieving a theoretical reduction in operational costs. Prototype phase (R&D). Currently verifying the algorithm's scalability with synthetic datasets.",
         "specs": [
             {
-                "label": "Protocol",
-                "value": "WebSocket (WSS)"
-            },
-            {
-                "label": "UI/UX",
-                "value": "React with minimalist brutality"
+                "label": "Numerical Calculation, Dynamic Programming",
+                "value": "Python"
             }
         ],
-        "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]",
+        "demo_text": "Demo is not available yet.",
         "ja": {
-            "last_updated": "2026-02-06T12:11:44.480Z",
-            "title": "初のプロジェクト ",
-            "name": "ポートフォリオのための最初のプロジェクト",
-            "subtitle": "React / WebSockets / 暗号化",
-            "brief": "暗号化された通信のための専用インターフェース。このプロジェクトは、標準的なWeb技術を使用したリアルタイムの安全なメッセージング機能を実証するために構築されました。",
-            "specs": [],
-            "demo_text": "[暗号化信号の可視化]"
+            "last_updated": "2026-02-06T22:16:27.337Z",
+            "title": "プロジェクト 1",
+            "name": "R&D：物流ネットワーク向け数値計算最適化エンジン",
+            "subtitle": "数値計算, Python, 動的計画法",
+            "brief": "数理計画法を用いて大規模な配送計画問題を解き、運用コストの論理的な削減を実現.",
+            "specs": [
+                {
+                    "label": "数値計算、動的計画法",
+                    "value": "Python"
+                }
+            ],
+            "demo_text": "デモは現在準備中です"
         }
     },
     {
