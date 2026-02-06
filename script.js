@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'lbl-subtitle': 'サブタイトル (SUBTITLE)',
                 'lbl-brief': '概要 (DESCRIPTION)',
                 'lbl-demo': 'デモテキスト (DEMO TEXT)',
+                'lbl-specs': '技術仕様 (TECHNICAL SPECS)',
                 'btn-save': '変更を保存',
                 'btn-view-page': 'ページを表示',
                 'copy-json': 'JSONをコピー'
@@ -143,6 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('subtitle').value = dataToEdit.subtitle || '';
         document.getElementById('brief').value = dataToEdit.brief || '';
         document.getElementById('demo_text').value = dataToEdit.demo_text || '';
+
+        // Populate Specs
+        renderEditorSpecs(dataToEdit.specs || []);
+
+        // Setup Add Spec Button
+        document.getElementById('btn-add-spec').onclick = () => {
+            addEditorSpec();
+        };
 
         // Setup Buttons
         const btnSwitch = document.getElementById('btn-switch-lang');
@@ -176,6 +185,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function renderEditorSpecs(specs) {
+        const container = document.getElementById('specs-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        specs.forEach((spec, index) => {
+            const row = document.createElement('div');
+            row.className = 'spec-row';
+            row.style.display = 'flex';
+            row.style.gap = '10px';
+            row.style.marginBottom = '10px';
+
+            row.innerHTML = `
+                <input type="text" class="spec-label" value="${spec.label}" placeholder="Label (e.g. Protocol)" style="flex: 1;">
+                <input type="text" class="spec-value" value="${spec.value}" placeholder="Value (e.g. WSS)" style="flex: 1;">
+                <button type="button" class="action-btn" onclick="removeEditorSpec(this)" style="border-color: #ff4444; color: #ff4444; padding: 0 10px;">X</button>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    window.addEditorSpec = () => {
+        const container = document.getElementById('specs-container');
+        if (!container) return;
+
+        const row = document.createElement('div');
+        row.className = 'spec-row';
+        row.style.display = 'flex';
+        row.style.gap = '10px';
+        row.style.marginBottom = '10px';
+
+        row.innerHTML = `
+            <input type="text" class="spec-label" placeholder="Label" style="flex: 1;">
+            <input type="text" class="spec-value" placeholder="Value" style="flex: 1;">
+            <button type="button" class="action-btn" onclick="removeEditorSpec(this)" style="border-color: #ff4444; color: #ff4444; padding: 0 10px;">X</button>
+        `;
+        container.appendChild(row);
+    }
+
+    window.removeEditorSpec = (btn) => {
+        btn.parentElement.remove();
+    }
+
     async function saveProjectData(id, lang, rootProject) {
         const now = new Date().toISOString();
         const statusEl = document.getElementById('save-status');
@@ -193,12 +245,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const briefVal = document.getElementById('brief').value;
         const demoVal = document.getElementById('demo_text').value;
 
+        // Scrape Specs
+        const specRows = document.querySelectorAll('.spec-row');
+        const newSpecs = Array.from(specRows).map(row => ({
+            label: row.querySelector('.spec-label').value,
+            value: row.querySelector('.spec-value').value
+        })).filter(s => s.label && s.value);
+
         const newData = {
             title: titleVal,
             name: nameVal,
             subtitle: subtitleVal,
             brief: briefVal,
             demo_text: demoVal,
+            specs: newSpecs,
             last_updated: now
         };
 

@@ -1,7 +1,7 @@
 [
     {
         "id": "project-one",
-        "last_updated": "2026-02-05T16:28:25.504Z",
+        "last_updated": "2026-02-06T12:10:34.194Z",
         "title": "First Project trial",
         "name": "First Project for the portfolio",
         "subtitle": "React / WebSockets / Encryption",
@@ -18,97 +18,49 @@
         ],
         "demo_text": "[ENCRYPTED SIGNAL VISUALIZATION WOULD GO HERE]",
         "ja": {
-            "last_updated": "2026-02-05T14:56:04.772Z",
+            "last_updated": "2026-02-06T12:11:44.480Z",
             "title": "初のプロジェクト ",
             "name": "ポートフォリオのための最初のプロジェクト",
             "subtitle": "React / WebSockets / 暗号化",
             "brief": "暗号化された通信のための専用インターフェース。このプロジェクトは、標準的なWeb技術を使用したリアルタイムの安全なメッセージング機能を実証するために構築されました。",
-            "specs": [
-                {
-                    "label": "プロトコル",
-                    "value": "WebSocket (WSS)"
-                },
-                {
-                    "label": "UI/UX",
-                    "value": "React / ミニマリスト・ブルータリズム"
-                }
-            ],
+            "specs": [],
             "demo_text": "[暗号化信号の可視化]"
         }
     },
     {
         "id": "project-two",
-        "last_updated": "2026-02-05T16:33:38.637Z",
-        "title": "PROJECT_TWO trial",
-        "name": "Data Vis",
-        "subtitle": "D3.js / WebGL / Big Data",
-        "brief": "High-fidelity data visualization tool. This application ingests massive datasets and renders them in a 3D space for easier analysis and pattern recognition.",
-        "specs": [
-            {
-                "label": "Rendering",
-                "value": "Three.js / WebGL"
-            },
-            {
-                "label": "Data Processing",
-                "value": "Python Backend Stream"
-            },
-            {
-                "label": "Performance",
-                "value": "60fps at 1M+ points"
-            }
-        ],
-        "demo_text": "[3D DATA CLOUD VISUALIZATION]",
+        "last_updated": "2026-02-06T12:11:08.996Z",
+        "title": "Coming soon...",
+        "name": "Comming soon...",
+        "subtitle": "Comming soon",
+        "brief": "Under developping.",
+        "specs": [],
+        "demo_text": "None",
         "ja": {
-            "last_updated": "2026-02-05T16:33:35.286Z",
-            "title": "プロジェクト・ツー",
-            "name": "データ可視化",
-            "subtitle": "D3.js / WebGL / ビッグデータ",
-            "brief": "高精度のデータ可視化ツール。このアプリケーションは、膨大なデータセットを取り込み、分析とパターン認識を容易にするために3D空間でレンダリングします。",
-            "specs": [
-                {
-                    "label": "レンダリング",
-                    "value": "Three.js / WebGL"
-                },
-                {
-                    "label": "データ処理",
-                    "value": "Pythonバックエンドストリーム"
-                },
-                {
-                    "label": "パフォーマンス",
-                    "value": "100万点以上で60fps"
-                }
-            ],
-            "demo_text": "[3Dデータクラウドの可視化]"
+            "last_updated": "2026-02-06T12:11:17.277Z",
+            "title": "準備中",
+            "name": "準備中",
+            "subtitle": "準備中",
+            "brief": "開発中",
+            "specs": [],
+            "demo_text": "無し"
         }
     },
     {
         "id": "project-three",
-        "last_updated": "2026-02-05T12:00:00Z",
-        "title": "PROJECT_THREE",
-        "name": "Drone Command",
-        "subtitle": "Vue.js / MQTT / IoT",
-        "brief": "Dashboard for monitoring and controlling autonomous drone swarms. Provides telemetry data, battery status, and GPS coordinates in real-time.",
-        "specs": [
-            {
-                "label": "Communication",
-                "value": "MQTT over WebSockets"
-            },
-            {
-                "label": "Framework",
-                "value": "Vue 3 Composition API"
-            },
-            {
-                "label": "Hardware",
-                "value": "ESP32 Controller Interface"
-            }
-        ],
-        "demo_text": "[DRONE SWARM TELEMETRY GRID]",
+        "last_updated": "2026-02-06T12:11:34.110Z",
+        "title": "Coming soon...",
+        "name": "Comming soon...",
+        "subtitle": "Comming soon",
+        "brief": "Under developing.",
+        "specs": [],
+        "demo_text": "None",
         "ja": {
-            "last_updated": "2026-02-05T12:00:00Z",
-            "title": "プロジェクト・スリー",
-            "name": "ドローンコマンド",
-            "subtitle": "Vue.js / MQTT / IoT",
-            "brief": "自律型ドローンの群れを監視および制御するためのダッシュボード。テレメトリデータ、バッテリーステータス、およびGPS座標をリアルタイムで提供します。",
+            "last_updated": "2026-02-06T12:01:38.715Z",
+            "title": "準備中",
+            "name": "準備中",
+            "subtitle": "準備中",
+            "brief": "開発中",
             "specs": [
                 {
                     "label": "通信",
@@ -123,7 +75,7 @@
                     "value": "ESP32 コントローラーインターフェース"
                 }
             ],
-            "demo_text": "[ドローン群テレメトリグリッド]"
+            "demo_text": "無し"
         }
     }
 ]
