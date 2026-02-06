@@ -56,25 +56,12 @@
         "specs": [],
         "demo_text": "None",
         "ja": {
-            "last_updated": "2026-02-06T12:01:38.715Z",
+            "last_updated": "2026-02-06T12:19:15.176Z",
             "title": "準備中",
             "name": "準備中",
             "subtitle": "準備中",
             "brief": "開発中",
-            "specs": [
-                {
-                    "label": "通信",
-                    "value": "MQTT over WebSockets"
-                },
-                {
-                    "label": "フレームワーク",
-                    "value": "Vue 3 Composition API"
-                },
-                {
-                    "label": "ハードウェア",
-                    "value": "ESP32 コントローラーインターフェース"
-                }
-            ],
+            "specs": [],
             "demo_text": "無し"
         }
     }
