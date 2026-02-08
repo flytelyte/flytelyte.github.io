@@ -31,10 +31,7 @@
         </header>
 
         <div class="project-content">
-            <div class="project-controls">
-                <button id="btn-edit-this" class="action-btn">Edit This Page</button>
-                <button id="btn-edit-other" class="action-btn">Edit Japanese Version</button>
-            </div>
+            <!-- Edit buttons removed -->
 
             <section class="mission-brief">
                 <h2>>> MISSION_BRIEF</h2>
@@ -99,31 +96,7 @@
                 return;
             }
 
-            try {
-                const response = await fetch('data/projects.json');
-                const projects = await response.json();
-                const projectBox = projects.find(p => p.id === projectId);
-
-                if (projectBox) {
-                    const project = (lang === 'ja' && projectBox.ja) ? { ...projectBox, ...projectBox.ja } : projectBox;
-
-                    document.title = `${project.name} | Solo Developer Yuki`;
-                    document.getElementById('p-title').innerText = `${project.title}: ${project.name}`;
-                    document.getElementById('p-subtitle').innerText = project.subtitle;
-                    document.getElementById('p-brief').innerText = project.brief;
-                    document.getElementById('p-demo').innerText = project.demo_text;
-
-                    const specsList = document.getElementById('p-specs');
-                    specsList.innerHTML = project.specs.map(s =>
-                        `<li><strong>${s.label}:</strong> ${s.value}</li>`
-                    ).join('');
-                } else {
-                    document.querySelector('.project-header h1').innerText = 'ERROR: PROJECT_NOT_FOUND';
-                }
-            } catch (error) {
-                console.error('Failed to load project data', error);
-                document.querySelector('.project-header h1').innerText = 'ERROR: DATA_CORRUPTION';
-            }
+            // Project data loading logic removed. script.js handles this centralized.
         });
     </script>
 </body>

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Determine Language based on Filename (Static Authority)
             const path = window.location.pathname;
-            const isJaPage = path.includes('_ja.html') || path.endsWith('/ja'); // Basic detection
+            const isJaPage = path.includes('_ja.html') || path.includes('project_ja') || path.endsWith('/ja'); // Robust detection
             const isGenericPage = path.includes('editor.html') || path.includes('admin.html');
 
             const params = new URLSearchParams(window.location.search);
@@ -142,6 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('title').value = dataToEdit.title || '';
         document.getElementById('name').value = dataToEdit.name || '';
         document.getElementById('subtitle').value = dataToEdit.subtitle || '';
+
+        // Status is always on the root object, not localized usually, but let's check
+        // If we want status to be editable per language, we need to handle it.
+        // For now, let's assume status is shared and stored on the root object as per plan.
+        if (document.getElementById('status')) {
+            document.getElementById('status').value = projectBox.status || 'planning';
+        }
+
         document.getElementById('brief').value = dataToEdit.brief || '';
         document.getElementById('demo_text').value = dataToEdit.demo_text || '';
 
@@ -244,6 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const subtitleVal = document.getElementById('subtitle').value;
         const briefVal = document.getElementById('brief').value;
         const demoVal = document.getElementById('demo_text').value;
+
+        // Get Status (only if element exists, and save to root)
+        const statusElInput = document.getElementById('status');
+        if (statusElInput) {
+            rootProject.status = statusElInput.value;
+        }
 
         // Scrape Specs
         const specRows = document.querySelectorAll('.spec-row');
@@ -414,12 +428,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('projects-grid-container');
         grid.innerHTML = allProjects.map(p => {
             const pData = getLocalizedData(p, lang);
+            const projectPage = lang === 'ja' ? 'project_ja.html' : 'project.html';
             return `
             <article class="project-card">
                 <h3>${pData.title}</h3>
                 <p>${pData.subtitle}</p>
                 <p class="card-brief">${pData.brief.substring(0, 100)}...</p>
-                <a href="project.html?id=${p.id}&lang=${lang}" class="read-more">${translations[lang]['read_more']}</a>
+                <a href="${projectPage}?id=${p.id}&lang=${lang}" class="read-more">${translations[lang]['read_more']}</a>
             </article>
             `;
         }).join('');
@@ -435,7 +450,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.title = `${project.name} | Solo Developer Yuki`;
             const titleEl = document.getElementById('p-title');
-            if (titleEl) titleEl.innerText = `${project.title}: ${project.name}`;
+            if (titleEl) {
+                // Determine Status Label and Class
+                let statusLabel = (projectBox.status || 'planning').toUpperCase();
+                let statusClass = `status-${projectBox.status || 'planning'}`;
+
+                // Localize Status Label
+                if (currentLang === 'ja') {
+                    const statusMap = {
+                        'planning': '企画中',
+                        'ongoing': '進行中',
+                        'completed': '完了'
+                    };
+                    statusLabel = statusMap[projectBox.status || 'planning'] || statusLabel;
+                }
+
+                titleEl.innerHTML = `
+                    <span class="project-status ${statusClass}">${statusLabel}</span><br>
+                    ${project.title}: ${project.name}
+                `;
+            }
 
             const subEl = document.getElementById('p-subtitle');
             if (subEl) subEl.innerText = project.subtitle;
